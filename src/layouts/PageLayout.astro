@@ -1,0 +1,517 @@
+---
+import { Image } from "astro:assets";
+import { siteConfig } from "../config/site";
+import "../styles/global.css";
+import "../styles/page-layout.css";
+import stacksLogo from "../assets/site/stacks-logo.png";
+import footerBooks from "../assets/site/footer-books.png";
+import spiralStill from "../assets/site/spiral-still-1.png";
+import spiralAnim from "../assets/site/animations/spiral.gif";
+import onBackgroundGif from "../assets/site/animations/on-background.gif";
+import offTheRecordGif from "../assets/site/animations/off-the-record.gif";
+import notesGif from "../assets/site/animations/notes.gif";
+
+// PageLayout component properties
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = "Stacks is The Daily Californian's official magazine.",
+} = Astro.props;
+
+// Navigation link interface
+interface NavLink {
+  href: string;
+  label: string;
+  gif?: string;
+}
+
+// Left navigation links in the header
+const navLinksLeft: NavLink[] = [
+  { href: "/headlines", label: "Headlines", gif: onBackgroundGif.src },
+  {
+    href: "/off-the-record",
+    label: "Off the Record",
+    gif: offTheRecordGif.src,
+  },
+  { href: "/notes", label: "Notes", gif: notesGif.src },
+  { href: "/from-the-stacks", label: "From the Stacks" },
+];
+
+// Right navigation links in the header
+const navLinksRight: NavLink[] = [
+  { href: "/upcoming-events", label: "Upcoming Events" },
+  { href: "/photo-essays", label: "Photo Essays" },
+  { href: "/editorial-cartoons", label: "Editorial Cartoons" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  {/* Head Metadata */}
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="generator" content={Astro.generator} />
+  <meta name="description" content={description} />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="icon" href="/favicon.ico" />
+  <title>{title}</title>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700&display=swap"
+  />
+
+  <body>
+    {/* Desktop header */}
+    <header
+      class="site-header desktop-only"
+      role="banner"
+      aria-label="Site navigation"
+    >
+      <nav id="nav-scroll" class="nav-scroll" aria-label="Primary sections">
+        {/* Left nav elements */}
+        {
+          navLinksLeft.map((item) => (
+            <a href={item.href} class="nav-item" data-gif={item.gif}>
+              {item.label}
+            </a>
+          ))
+        }
+
+        {/* Center logo */}
+        <a class="nav-logo" href="/" aria-label="Stacks">
+          <Image src={stacksLogo} alt="Stacks" width={220} height={70} />
+        </a>
+
+        {/* Right nav elements */}
+        {
+          navLinksRight.map((item) => (
+            <a href={item.href} class="nav-item" data-gif={item.gif}>
+              {item.label}
+            </a>
+          ))
+        }
+
+        {/* About dropdown */}
+        <div class="nav-item-group">
+          <a href="/about" class="nav-item nav-item-parent">About</a>
+          <div class="nav-dropdown" aria-label="About submenu">
+            <a href="/issues" class="nav-item nav-item-sub">Issues</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    {/* Mobile header */}
+    <div class="mobile-only" role="banner" aria-label="Mobile navigation">
+      <div class="mobile-bar">
+        {/* Logo */}
+        <a class="mobile-logo" href="/" aria-label="Stacks">
+          <Image src={stacksLogo} alt="Stacks" width={220} height={70} />
+        </a>
+
+        {/* Hamburger menu */}
+        <button
+          id="mobile-menu-toggle"
+          class="mobile-menu-toggle"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          aria-label="Toggle menu"
+        >
+          <span class="line"></span><span class="line"></span><span class="line"
+          ></span>
+        </button>
+      </div>
+
+      {/* Mobile navigation menu dropdown */}
+      <nav id="mobile-menu" class="mobile-menu" aria-label="Mobile menu">
+        {/* Left and right navigation elements */}
+        {
+          [...navLinksLeft, ...navLinksRight].map((item, i) =>
+            item.gif ? (
+              <a
+                href={item.href}
+                class="nav-item has-gif"
+                data-gif={item.gif}
+                style={`--delay:${i * 0.1}s`}
+              >
+                <span class="nav-text">{item.label}</span>
+              </a>
+            ) : (
+              <a href={item.href} class="nav-item">
+                {item.label}
+              </a>
+            ),
+          )
+        }
+
+        {/* About and issues links */}
+        <a href="/about" class="nav-item separator">About</a>
+        <a href="/issues" class="nav-item">Issues</a>
+      </nav>
+    </div>
+
+    {/* Folio section */}
+    <div class="folio" role="contentinfo" aria-label="Folio">
+      {/* Desktop folio */}
+      <div class="folio-inner">
+        <div id="folio-cluster" class="folio-cluster">
+          {/* Date */}
+          <div class="folio-left">
+            <span id="folio-date" class="folio-item"></span>
+          </div>
+
+          {/* Publication */}
+          <div class="folio-center" aria-label="Publication">
+            <span class="folio-sep" aria-hidden="true">●</span>
+            <a
+              class="folio-item"
+              href="https://dailycal.org"
+              target="_blank"
+              rel="noopener">The Daily Californian</a
+            >
+            <span class="folio-sep" aria-hidden="true">●</span>
+          </div>
+
+          {/* Current issue */}
+          <div class="folio-right">
+            <span class="folio-item">{siteConfig.currentIssue}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile folio */}
+      <div class="folio-mobile">
+        {/* Publication */}
+        <a
+          class="folio-item"
+          href="https://dailycal.org"
+          target="_blank"
+          rel="noopener">The Daily Californian</a
+        >
+
+        <span class="folio-dot" aria-hidden="true">●</span>
+
+        {/* Current issue */}
+        <span class="folio-item">{siteConfig.currentIssue}</span>
+      </div>
+    </div>
+
+    {/* Main content slot */}
+    <main>
+      <slot />
+    </main>
+
+    {/* Footer */}
+    <footer class="site-footer-main" id="global-footer" role="contentinfo">
+      <div class="footer-inner">
+        <div class="footer-spin"></div>
+
+        <div class="footer-left">
+          {/* Location and Datetime */}
+          <div class="footer-block" id="block-time">
+            <div class="footer-title" id="time-title">Berkeley, CA</div>
+            <div class="footer-value footer-mainfont">
+              <span id="berkeley-time">—</span>
+            </div>
+          </div>
+
+          {/* Coordinates */}
+          <div class="footer-block">
+            <div class="footer-title">The Daily Cal</div>
+            <div class="footer-value footer-mainfont">
+              <span id="coords">37.8715° N, 122.2730° W</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Books icon */}
+        <div class="footer-right">
+          <img class="footer-books" src={footerBooks.src} alt="Books" />
+        </div>
+      </div>
+    </footer>
+
+    {/* Floating spin button */}
+    <button
+      id="floating-spin-btn"
+      class="floating-spin-btn"
+      aria-label="Spin website"
+    >
+      <img
+        id="spin-gif-btn"
+        src={spiralStill.src}
+        alt="Spin"
+        data-still={spiralStill.src}
+        data-anim={spiralAnim.src}
+      />
+    </button>
+
+    <script>
+      // Init folio date
+      (function () {
+        const el = document.getElementById("folio-date");
+        if (!el) return;
+        const nowLA = new Date(
+          new Date().toLocaleString("en-US", {
+            timeZone: "America/Los_Angeles",
+          }),
+        );
+        const wd = nowLA.toLocaleString("en-US", { weekday: "long" });
+        let m = nowLA.toLocaleString("en-US", { month: "short" });
+        if (m !== "May") m += ".";
+        const d = String(nowLA.getDate()).padStart(2, "0");
+        const y = nowLA.getFullYear();
+        el.textContent = `${wd}, ${m} ${d}, ${y}`;
+      })();
+
+      // Clock and BERKELEY TIME logic
+      let toggleBerkeleyTime: () => void;
+
+      (function () {
+        const clockEl = document.getElementById("berkeley-time");
+        const titleEl = document.getElementById("time-title");
+        const tz = "America/Los_Angeles";
+
+        let plus10 = false;
+
+        // Format date and time
+        const fmt = (d: Date) => {
+          let m = d.toLocaleString("en-US", { month: "short", timeZone: tz });
+          if (m !== "May") m += ".";
+
+          const day = d.toLocaleString("en-US", {
+            day: "2-digit",
+            timeZone: tz,
+          });
+          const t = d.toLocaleString("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+            timeZone: tz,
+          });
+          return `${m} ${day} · ${t}`;
+        };
+
+        // Tick the clock
+        function tick() {
+          const now = new Date();
+          const show = new Date(now.getTime() + (plus10 ? 10 * 60000 : 0));
+          if (clockEl) clockEl.textContent = fmt(show);
+        }
+        setInterval(tick, 250);
+        tick();
+
+        // Set (and apply) the BERKELEY TIME state
+        function setPlus10(value: boolean) {
+          plus10 = value;
+          if (titleEl)
+            titleEl.textContent = plus10 ? "BERKELEY TIME" : "Berkeley, CA";
+          tick();
+        }
+
+        // Toggle BERKELEY TIME
+        toggleBerkeleyTime = function () {
+          setPlus10(!plus10);
+        };
+
+        // BERKELEY TIME hit box
+        const block = document.getElementById("block-time");
+
+        // Show/hide BERKELEY TIME on hover
+        block?.addEventListener("pointerenter", (e) => {
+          if (e.pointerType !== "mouse" && e.pointerType !== "pen") return;
+          setPlus10(true);
+        });
+
+        block?.addEventListener("pointerleave", (e) => {
+          if (e.pointerType !== "mouse" && e.pointerType !== "pen") return;
+          setPlus10(false);
+        });
+
+        // Toggle BERKELEY TIME on touch tap
+        block?.addEventListener("pointerup", (e) => {
+          if (e.pointerType !== "touch") return;
+          toggleBerkeleyTime();
+        });
+      })();
+
+      // Init desktop navigation GIFs
+      (function () {
+        if (!matchMedia("(min-width:1024px)").matches) return;
+        if (!matchMedia("(hover:hover) and (pointer:fine)").matches) return;
+
+        const rail = document.getElementById("nav-scroll");
+        if (!rail) return;
+
+        const items = Array.from(rail.querySelectorAll("a.nav-item"));
+
+        // Iterate over nav items
+        items.forEach((a) => {
+          const gifSrc = a.getAttribute("data-gif");
+          if (!gifSrc) return;
+
+          // Add mouse enter event to show GIF
+          a.addEventListener("mouseenter", () => {
+            const old = a.querySelector("img.nav-gif");
+            if (old) old.remove();
+
+            const img = new Image();
+            img.className = "nav-gif";
+            img.alt = "";
+            img.decoding = "async";
+            img.src = gifSrc + "?t=" + Date.now();
+
+            a.appendChild(img);
+
+            // Hide GIF after timeout
+            setTimeout(() => {
+              if (!img.isConnected) return;
+              img.classList.add("fadeout");
+              setTimeout(() => img.remove(), 160);
+            }, 1200);
+          });
+
+          // Add mouse leave event to hide GIF
+          a.addEventListener("mouseleave", () => {
+            const old = a.querySelector("img.nav-gif");
+            if (old) {
+              old.classList.add("fadeout");
+              setTimeout(() => old.remove(), 160);
+            }
+          });
+        });
+      })();
+
+      // Init mobile menu toggle + sequential GIF player
+      (function () {
+        if (!matchMedia("(max-width:1023px)").matches) return;
+
+        const btn = document.getElementById("mobile-menu-toggle");
+        const menu = document.getElementById("mobile-menu");
+        if (!btn || !menu) return;
+
+        let sequenceTimeouts: ReturnType<typeof setTimeout>[] = [];
+
+        // Toggle mobile menu dropdown
+        btn.addEventListener("click", () => {
+          const isOpen = menu.classList.toggle("open");
+          btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          btn.classList.toggle("active", isOpen);
+
+          // Clear previous GIF sequence
+          sequenceTimeouts.forEach(clearTimeout);
+          sequenceTimeouts = [];
+
+          const gifLinks = Array.from(
+            menu.querySelectorAll(".nav-item.has-gif"),
+          );
+
+          if (isOpen) {
+            document.body.style.overflow = "hidden";
+
+            // Sequentially init GIFs for each link
+            gifLinks.forEach((link) => {
+              const old = link.querySelector("img.mobile-nav-gif");
+              if (old) old.remove();
+
+              const src = link.getAttribute("data-gif");
+              if (!src) return;
+
+              const img = new Image();
+              img.className = "mobile-nav-gif";
+              img.alt = "";
+              img.src = src + "?t=" + Date.now();
+              link.appendChild(img);
+            });
+
+            const PLAY_DURATION = 1800;
+
+            // Sequentially play GIFs for each link
+            gifLinks.forEach((link, index) => {
+              const startTime = index * PLAY_DURATION;
+              const endTime = startTime + PLAY_DURATION;
+
+              const t1 = setTimeout(() => {
+                const img = link.querySelector(".mobile-nav-gif");
+                if (img) img.classList.add("playing");
+              }, startTime);
+
+              const t2 = setTimeout(() => {
+                const img = link.querySelector(".mobile-nav-gif");
+                if (img) {
+                  img.classList.remove("playing");
+                  img.classList.add("finished");
+                }
+              }, endTime);
+
+              sequenceTimeouts.push(t1, t2);
+            });
+          } else {
+            document.body.style.overflow = "";
+            const gifs = menu.querySelectorAll("img.mobile-nav-gif");
+            gifs.forEach((g) => g.remove());
+          }
+        });
+      })();
+
+      // Init spin functionality + books trigger
+      (function () {
+        const btn = document.getElementById("floating-spin-btn");
+        const img = document.getElementById(
+          "spin-gif-btn",
+        ) as HTMLImageElement | null;
+        const booksBtn = document.querySelector(
+          ".footer-right",
+        ) as HTMLElement | null;
+
+        if (!btn || !img) return;
+
+        const baseStillSrc = img.getAttribute("data-still")!;
+        const baseAnimSrc = img.getAttribute("data-anim")!;
+
+        // Run the spin animation
+        function runSpinAnimation() {
+          const sep = baseAnimSrc.includes("?") ? "&" : "?";
+          img!.src = baseAnimSrc + sep + "r=" + Date.now();
+          setTimeout(() => {
+            img!.src = baseStillSrc;
+          }, 1200);
+
+          const root = document.documentElement;
+
+          root.classList.remove("spin-once");
+          void root.offsetWidth;
+          root.classList.add("spin-once");
+
+          // Remove the spin-once class after the animation ends
+          root.addEventListener(
+            "animationend",
+            () => {
+              root.classList.remove("spin-once");
+            },
+            { once: true },
+          );
+        }
+
+        // Trigger spin on click
+        btn.addEventListener("click", runSpinAnimation);
+
+        // Trigger BERKELEY TIME on books click
+        if (booksBtn) {
+          booksBtn.style.cursor = "pointer";
+          booksBtn.addEventListener("click", function () {
+            if (typeof toggleBerkeleyTime === "function") {
+              toggleBerkeleyTime();
+            }
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

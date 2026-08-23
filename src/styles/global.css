@@ -1,0 +1,79 @@
+/**
+ * Global, site-wide styling.
+ */
+@font-face {
+	font-family: "JMHTypewriter";
+	src:
+		url("/fonts/JMHTypewriter.ttf") format("truetype"),
+		url("/fonts/JMHTypewriter.otf") format("opentype");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "GillSansNova-CnBold";
+	src: url("/fonts/GillSansNova-CnBold.ttf") format("truetype");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+:root {
+	--font-sans: "Georgia", serif;
+	--font-serif: "Georgia", serif;
+	--font-logo: "Georgia", serif;
+	--font-folio: "JMHTypewriter", serif;
+	--font-folio-2: "GillSansNova-CnBold", serif;
+
+	--color-bg: #fff;
+	--color-text: #111;
+	--color-border: #606a97;
+	--color-subtle: #666;
+
+	--nav-bg: #000;
+	--nav-glow: rgba(255, 255, 255, 0.3);
+
+	--header-height: 96px;
+	--header-height-shrink: 74px;
+	--folio-h: 36px;
+	--footer-extra-bottom: 10px;
+
+	--mobile-menu-bg: rgba(25, 25, 30, 0.6);
+}
+
+html,
+body {
+	height: 100%;
+}
+body {
+	margin: 0;
+	color: var(--color-text);
+	background: var(--color-bg);
+	line-height: 1.7;
+	font-family: var(--font-serif);
+	display: flex;
+	flex-direction: column;
+	position: relative;
+}
+
+a,
+a:visited {
+	color: inherit;
+	text-decoration: none;
+}
+
+html {
+	overflow-x: hidden;
+}
+img,
+svg,
+video,
+canvas {
+	max-width: 100%;
+	height: auto;
+	display: block;
+}
+
+main {
+	flex: 1 0 auto;
+}

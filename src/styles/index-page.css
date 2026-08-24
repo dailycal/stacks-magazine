@@ -1,0 +1,158 @@
+/*
+ * Styling for src/pages/index.astro.
+ */
+
+.site-main {
+	padding: 1.25rem;
+	max-width: 1450px;
+	margin: 0 auto;
+}
+.issue-block {
+	padding: 1.25rem 0;
+}
+
+/* Two-column hero: cover | toc */
+.issue-content {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 1.5rem;
+	font-size: 1rem;
+}
+
+@media (min-width: 1024px) {
+	/* two equal columns, stretch both sides to the same row height */
+	.issue-content {
+		grid-template-columns: 1fr 1fr;
+		gap: 1.5rem;
+		align-items: stretch;
+	}
+
+	/* Make the cover column stretch and crop internally */
+	.issue-cover {
+		display: flex;
+		overflow: hidden;
+	}
+
+	/* Fill the entire area, match .issue-toc height, allow slight zoom */
+	.issue-cover img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center;
+		max-height: none;
+		transform: scale(1.03);
+	}
+}
+
+.issue-cover img {
+	width: 100%;
+	height: auto;
+	max-height: 80vh;
+	object-fit: contain;
+}
+
+/* Placeholder shown until real issue data is wired up */
+.issue-cover-placeholder {
+	width: 100%;
+	aspect-ratio: 3 / 4;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px dashed var(--color-border);
+	color: var(--color-subtle);
+	font-family: var(--font-sans);
+	text-align: center;
+	padding: 1rem;
+}
+
+/* TOC: allow multiple titles per category (no lines between titles) */
+.issue-toc {
+	font-size: 1.2rem;
+	display: flex;
+	flex-direction: column;
+	line-height: 1.3;
+}
+.issue-toc h2 {
+	margin: 0.5rem 0 1.5rem;
+	font-size: 1.25rem;
+}
+.issue-toc ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+.issue-toc li {
+	padding: 0.25rem 0;
+}
+
+.toc-category {
+	display: block;
+	font-size: 1rem;
+	color: var(--color-subtle);
+	margin-bottom: 0.25rem;
+}
+
+@media (min-width: 1024px) {
+	.toc-category {
+		font-size: 1.25rem;
+	}
+}
+
+.toc-title {
+	font-size: 1.3rem;
+	display: block;
+	font-weight: 700;
+	font-family: var(--font-sans);
+	padding: 0.88rem 0.25rem 0.25rem 0;
+	border-bottom: 1px solid var(--color-border);
+}
+.issue-toc a.toc-title:hover {
+	font-style: italic;
+}
+.issue-toc li:last-child .toc-title:last-child {
+	border-bottom: none;
+}
+
+/* "about stacks" / "submit" boxes: centered and wider on desktop */
+.mission-statement {
+	margin-top: 0.25rem;
+}
+.about-statement {
+	margin-top: 0.25rem;
+}
+
+@media (min-width: 1024px) {
+	.mission-statement {
+		max-width: 80%;
+		margin: 0.5rem auto 0;
+		padding-top: 0.5rem;
+		text-align: center;
+		font-size: 1.25rem;
+	}
+	.about-statement {
+		max-width: 80%;
+		margin: 0.25rem auto 0;
+		padding-top: 1.5rem;
+		text-align: center;
+		font-size: 1.25rem;
+		border-bottom: 1px solid var(--color-border);
+	}
+}
+
+/* Issue cover figcaption */
+.figcaption-issue-cover {
+	font-size: 0.9rem;
+	color: var(--color-subtle);
+	margin-top: 0.35rem;
+}
+
+@media (min-width: 1024px) {
+	.figcaption-issue-cover {
+		margin-left: 44px;
+		margin-top: 1rem;
+		font-size: 1.3rem;
+	}
+}

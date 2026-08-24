@@ -97,6 +97,7 @@
 .folio-item {
 	letter-spacing: 0.125em;
 	word-spacing: 0.1em;
+	text-decoration: none;
 }
 .folio-sep {
 	font-size: 0;
@@ -149,6 +150,12 @@
 	font-family: var(--font-sans);
 	font-size: clamp(0.75rem, 0.9vw, 1.1rem);
 	padding: 0.6rem clamp(0.2rem, 0.5vw, 0.8rem);
+	text-decoration: none;
+}
+
+.nav-logo,
+.mobile-logo {
+	text-decoration: none;
 }
 
 .nav-logo img {
@@ -449,6 +456,7 @@ html.spin-once .floating-spin-btn {
 		text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
 		overflow: visible;
 		z-index: 2;
+		text-decoration: none;
 	}
 	.mobile-menu .nav-text {
 		position: relative;

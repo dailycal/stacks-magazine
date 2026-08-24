@@ -1,8 +1,97 @@
 ---
 import PageLayout from "../layouts/PageLayout.astro";
+import "../styles/index-page.css";
+
+// Type definitions for table of contents entries
+interface TocArticle {
+  href: string;
+  title: string;
+}
+
+interface TocGroup {
+  category: string;
+  articles: TocArticle[];
+}
+
+// TODO: Placeholder "In This Issue" table of contents
+const tableOfContents: TocGroup[] = [
+  {
+    category: "Headlines",
+    articles: [{ href: "#", title: "Placeholder headline" }],
+  },
+  {
+    category: "Off the Record",
+    articles: [{ href: "#", title: "Placeholder headline" }],
+  },
+  {
+    category: "Notes",
+    articles: [{ href: "#", title: "Placeholder headline" }],
+  },
+  {
+    category: "Photo Essays",
+    articles: [{ href: "#", title: "Placeholder headline" }],
+  },
+  {
+    category: "From the Stacks",
+    articles: [],
+  },
+];
 ---
 
 <PageLayout title="Stacks Magazine">
-	<p>Home page content coming soon.</p>
-</PageLayout>
+  <div class="site-main">
+    <section class="issue-block">
+      <div class="issue-content">
+        {/* Cover: replace placeholder with the real issue cover later */}
+        <div class="issue-cover">
+          <a href="/issues">
+            <div class="issue-cover-placeholder">Issue cover coming soon</div>
+          </a>
+          <figcaption class="figcaption-issue-cover">Cover by</figcaption>
+        </div>
 
+        {/* Table of contents */}
+        <div class="issue-toc">
+          <h2>In This Issue</h2>
+          <ul>
+            {
+              tableOfContents.map((group) => (
+                <li class="toc-group">
+                  <span class="toc-category">{group.category}</span>
+                  {group.articles.map((article) => (
+                    <a class="toc-title" href={article.href}>
+                      {article.title}
+                    </a>
+                  ))}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+
+      {/* About statement */}
+      <div class="about-statement">
+        <h2>About</h2>
+        <p>
+          <i>Stacks</i> is The Daily Californian's official magazine. It's home to
+          longform journalism, commentaries, creative writing and more.
+          <i>Stacks</i> is an archive of Berkeley as it is, as we think it is and
+          as we want it to be.
+        </p>
+      </div>
+
+      {/* Submission statement */}
+      <div class="mission-statement">
+        <h2>Submit</h2>
+        <p>
+          To pitch or submit work to <i>Stacks</i> email <a
+            href="mailto:stacks@dailycal.org">stacks@dailycal.org</a
+          >. We're looking for commentaries, essays, reviews, satires, and more.
+          We especially love work that highlights new or misunderstood aspects
+          of Berkeley and the Bay Area.
+        </p>
+      </div>
+    </section>
+  </div>
+</PageLayout>

@@ -1,0 +1,55 @@
+---
+/**
+ * Image component for articles
+ */
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+// Type definitions for props
+interface Props {
+  src: ImageMetadata | string;
+  alt: string;
+  caption?: string;
+  featured?: boolean;
+}
+
+const { src, alt, caption, featured = false } = Astro.props;
+---
+
+<figure class:list={["article-image", { "article-image--featured": featured }]}>
+  {/* Image */}
+  {
+    typeof src === "string" ? (
+      <img src={src} alt={alt} />
+    ) : (
+      <Image src={src} alt={alt} />
+    )
+  }
+  
+  {/* Caption */}
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .article-image {
+    max-width: min(80ch, 92vw);
+    margin: 1.1rem auto;
+  }
+  .article-image--featured {
+    max-width: min(1200px, 92vw);
+    margin: 0 auto 1.25rem auto;
+  }
+  .article-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--color-border);
+    background: #f9f9f9;
+  }
+  .article-image figcaption {
+    font-size: 0.9rem;
+    color: var(--color-subtle);
+    margin-top: 0.35rem;
+    font-family: var(--font-sans);
+  }
+</style>

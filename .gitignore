@@ -25,3 +25,4 @@ pnpm-debug.log*
 
 # Old stacks site
 stacks.github.io
+localscripts/

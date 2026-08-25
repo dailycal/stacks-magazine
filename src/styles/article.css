@@ -1,0 +1,86 @@
+/*
+ * Styling for src/pages/issues/[issue]/[slug].astro.
+ */
+
+.article-full {
+	--article-width: min(1200px, 92vw);
+	--article-measure: min(80ch, 92vw);
+	padding: 1rem;
+}
+@media (min-width: 1024px) {
+	.article-full {
+		padding: 2rem 1.5rem;
+	}
+}
+
+.article-header {
+	max-width: var(--article-width);
+	margin: 0 auto 1rem auto;
+}
+.article-kicker {
+	font-size: 0.82rem;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--color-subtle);
+	margin-bottom: 0.35rem;
+	text-align: center;
+}
+.article-headline {
+	font-family: var(--font-logo);
+	font-weight: 400;
+	line-height: 1.1;
+	font-size: clamp(2rem, 4vw, 3rem);
+	text-align: center;
+	margin: 0 0 0.6rem 0;
+}
+.article-sub-headline {
+	font-family: var(--font-logo);
+	font-weight: 400;
+	line-height: 1;
+	font-size: clamp(1rem, 3vw, 2rem);
+	text-align: center;
+	margin: 0 0 0.6rem 0;
+}
+.article-byline {
+	font-family: var(--font-sans);
+	text-align: center;
+	margin: 0 0 0.8rem 0;
+	color: var(--color-text);
+	font-size: clamp(1.1rem, 2.1vw, 1.25rem);
+}
+
+.article-body {
+	max-width: var(--article-width);
+	margin: 0 auto 4rem auto;
+	font-size: clamp(1rem, 1.7vw, 1.1rem);
+}
+.article-body p {
+	max-width: var(--article-measure);
+	margin: 0 auto 1.05rem auto;
+}
+.article-body blockquote {
+	max-width: var(--article-measure);
+	margin: 1.25rem auto;
+	padding: 0.75rem 1rem;
+	border-left: 3px solid #000;
+	background: #fafafa;
+	font-style: italic;
+}
+.article-body h2,
+.article-body h3 {
+	max-width: var(--article-measure);
+	margin: 2rem auto 1rem auto;
+	line-height: 1.2;
+}
+
+@media (max-width: 1023px) {
+	.article-full {
+		padding: 1rem 0.9rem;
+	}
+	.article-body {
+		margin-bottom: 5rem;
+	}
+	.article-body p {
+		margin-bottom: 0.95rem;
+	}
+}

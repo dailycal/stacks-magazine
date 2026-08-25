@@ -1,0 +1,193 @@
+---
+/**
+ * A dated historical newspaper clip (or group of clips) for "From the Stacks" pieces.
+ */
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+// Type definitions for clip images
+interface ClipImage {
+  src: ImageMetadata | string;
+  alt: string;
+}
+
+// Type definitions for props
+interface Props {
+  date: string;
+  images: ClipImage[];
+}
+
+const { date, images } = Astro.props;
+---
+
+<div class="archive-clip">
+  {/* Date/title label */}
+  <div class="archive-clip-date">{date}</div>
+  <div class="archive-clip-images">
+    {
+      /* Iterate over images for this clip */
+      images.map((img) => (
+        <span class="archive-clip-figure">
+          {/* Image */}
+          <button
+            type="button"
+            class="archive-clip-trigger"
+            aria-label="View full size"
+          >
+            {typeof img.src === "string" ? (
+              <img src={img.src} alt={img.alt} />
+            ) : (
+              <Image src={img.src} alt={img.alt} />
+            )}
+          </button>
+
+          {/* Dialog */}
+          <dialog class="archive-clip-dialog">
+            {/* Close button */}
+            <form method="dialog">
+              <button
+                type="submit"
+                class="archive-clip-dialog-close"
+                aria-label="Close"
+              >
+                &times;
+              </button>
+            </form>
+
+            {/* Full-size image */}
+            {typeof img.src === "string" ? (
+              <img src={img.src} alt={img.alt} />
+            ) : (
+              <Image src={img.src} alt={img.alt} />
+            )}
+
+            {/* Date/title label */}
+            <div class="archive-clip-dialog-date">{date}</div>
+
+            {/* Caption */}
+            <div class="archive-clip-dialog-caption">
+              <slot />
+            </div>
+          </dialog>
+        </span>
+      ))
+    }
+  </div>
+  
+  {/* Caption */}
+  <p class="archive-clip-caption"><slot /></p>
+</div>
+
+<script>
+  // Open a clip's dialog on click; close it on backdrop click
+  document
+    .querySelectorAll<HTMLElement>(".archive-clip-figure")
+    .forEach((wrap) => {
+      const trigger = wrap.querySelector("button.archive-clip-trigger");
+      const dialog = wrap.querySelector(
+        "dialog.archive-clip-dialog",
+      ) as HTMLDialogElement | null;
+      if (!trigger || !dialog) return;
+
+      trigger.addEventListener("click", () => dialog.showModal());
+      dialog.addEventListener("click", (e) => {
+        if (e.target === dialog) dialog.close();
+      });
+    });
+</script>
+
+<style>
+  .archive-clip {
+    max-width: min(800px, 92vw);
+    margin: 3rem auto;
+  }
+  .archive-clip-date {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  .archive-clip-images {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2%;
+  }
+  .archive-clip-figure {
+    display: contents;
+  }
+  .archive-clip-trigger {
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: block;
+    flex: 1 1 260px;
+    max-width: 100%;
+  }
+  .archive-clip-trigger img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--color-text, #000);
+    transition: transform 0.3s ease;
+  }
+  .archive-clip-trigger:hover img {
+    transform: scale(1.03);
+  }
+  .archive-clip-caption {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    color: var(--color-subtle);
+    font-style: italic;
+    text-align: center;
+    line-height: 1.5;
+    margin-top: 1rem;
+  }
+
+  .archive-clip-dialog {
+    position: relative;
+    border: none;
+    padding: 0;
+    background: transparent;
+    max-width: 90vw;
+    max-height: 90vh;
+  }
+  .archive-clip-dialog::backdrop {
+    background: rgba(15, 15, 15, 0.89);
+  }
+  .archive-clip-dialog img {
+    display: block;
+    max-width: 90vw;
+    max-height: 65vh;
+    margin: 0 auto;
+    border: 1px solid #555;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+  }
+  .archive-clip-dialog-date,
+  .archive-clip-dialog-caption {
+    color: #fff;
+    text-align: center;
+    font-family: var(--font-serif);
+  }
+  .archive-clip-dialog-date {
+    font-size: 1.25rem;
+    margin-top: 15px;
+  }
+  .archive-clip-dialog-caption {
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 10px auto 0;
+    line-height: 1.4;
+  }
+  .archive-clip-dialog-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    color: #fff;
+    font-size: 30px;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+</style>

@@ -1,11 +1,22 @@
 ---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
 import PageLayout from "../layouts/PageLayout.astro";
 import "../styles/index-page.css";
+import { siteConfig } from "../config/site";
+import {
+  getAllArticles,
+  getMostRecentIssue,
+  formatIssueDate,
+  issueDirName,
+  type ArticleWithSlugs,
+} from "../lib/issues";
 
 // Type definitions for table of contents entries
 interface TocArticle {
   href: string;
   title: string;
+  subheadline?: string;
 }
 
 interface TocGroup {
@@ -13,41 +24,73 @@ interface TocGroup {
   articles: TocArticle[];
 }
 
-// TODO: Placeholder "In This Issue" table of contents
-const tableOfContents: TocGroup[] = [
-  {
-    category: "Headlines",
-    articles: [{ href: "#", title: "Placeholder headline" }],
-  },
-  {
-    category: "Off the Record",
-    articles: [{ href: "#", title: "Placeholder headline" }],
-  },
-  {
-    category: "Notes",
-    articles: [{ href: "#", title: "Placeholder headline" }],
-  },
-  {
-    category: "Photo Essays",
-    articles: [{ href: "#", title: "Placeholder headline" }],
-  },
-  {
-    category: "From the Stacks",
-    articles: [],
-  },
-];
+// Get the most recent issue and all articles in that issue
+const allArticles = await getAllArticles();
+const currentIssue = getMostRecentIssue(allArticles.map((article) => article.issue));
+const currentIssueArticles = allArticles.filter((article) => article.issue === currentIssue);
+
+// Group the current issue's articles by section
+const articlesBySection = new Map<string, ArticleWithSlugs[]>();
+for (const article of currentIssueArticles) {
+  const section = article.entry.data.section;
+  const group = articlesBySection.get(section) ?? [];
+  group.push(article);
+  articlesBySection.set(section, group);
+}
+
+// Newest first within each section
+for (const group of articlesBySection.values()) {
+  group.sort((a, b) => b.entry.data.publishDate.getTime() - a.entry.data.publishDate.getTime());
+}
+
+// Sections sorted by most articles first, then alphabetically to break ties
+const tableOfContents: TocGroup[] = Array.from(articlesBySection.entries())
+  .sort(([sectionA, articlesA], [sectionB, articlesB]) => {
+    if (articlesA.length !== articlesB.length) return articlesB.length - articlesA.length;
+    return sectionA.localeCompare(sectionB);
+  })
+  .map(([section, articles]) => ({
+    category: section,
+    articles: articles.map((article) => ({
+      href: `/issues/${article.issue}/${article.slug}`,
+      title: article.entry.data.title,
+      subheadline: article.entry.data.subheadline,
+    })),
+  }));
+
+// The issue cover, if one exists at assets/images/<issue directory>/cover.png.
+// Left blank (falls back to the placeholder) when it doesn't.
+const coverImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/*/cover.png",
+  { eager: true },
+);
+const coverImage = coverImages[`/src/assets/images/${issueDirName(currentIssue)}/cover.png`]?.default;
+const currentIssueDateLabel = formatIssueDate(currentIssue);
 ---
 
 <PageLayout title="Stacks Magazine">
   <div class="site-main">
     <section class="issue-block">
       <div class="issue-content">
-        {/* Cover: replace placeholder with the real issue cover later */}
+        {/* Cover: the real cover image if one exists, otherwise a placeholder */}
         <div class="issue-cover">
-          <a href="/issues">
-            <div class="issue-cover-placeholder">Issue cover coming soon</div>
-          </a>
-          <figcaption class="figcaption-issue-cover">Cover by</figcaption>
+          {/* Frame: sizes/centers once so the image and caption always line up */}
+          <div class="issue-cover-frame">
+            <a href="/issues">
+              {
+                coverImage ? (
+                  <Image src={coverImage} alt={`${siteConfig.currentIssue} cover`} />
+                ) : (
+                  <div class="issue-cover-placeholder">
+                    <span class="issue-cover-placeholder-issue">{siteConfig.currentIssue}</span>
+                    <span>{currentIssueDateLabel}</span>
+                    <span>Issue cover coming soon</span>
+                  </div>
+                )
+              }
+            </a>
+            <figcaption class="figcaption-issue-cover">Cover by</figcaption>
+          </div>
         </div>
 
         {/* Table of contents */}
@@ -61,6 +104,12 @@ const tableOfContents: TocGroup[] = [
                   {group.articles.map((article) => (
                     <a class="toc-title" href={article.href}>
                       {article.title}
+                      {article.subheadline && (
+                        <>
+                          <br />
+                          <span class="toc-subtitle">{article.subheadline}</span>
+                        </>
+                      )}
                     </a>
                   ))}
                 </li>

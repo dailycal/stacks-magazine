@@ -52,3 +52,58 @@ export async function getAllArticles(): Promise<ArticleWithSlugs[]> {
     return { issue: parseIssueDirName(dirName), slug, entry };
   });
 }
+
+/**
+ * Parses an issue slug (e.g. "april-2026") into a Date representing the 1st of that month.
+ * @param issue The issue slug.
+ * @returns A Date for the 1st of that issue's month.
+ */
+export function issueSlugToDate(issue: string): Date {
+  const match = issue.match(/^([a-z]+)-(\d{4})$/);
+  if (!match) {
+    throw new Error(`Invalid issue slug "${issue}" — expected "<month>-<year>".`);
+  }
+  const [, month, year] = match;
+  const monthIndex = MONTHS.indexOf(month);
+  if (monthIndex === -1) {
+    throw new Error(`Invalid issue slug "${issue}" — "${month}" isn't a valid month name.`);
+  }
+  return new Date(Number(year), monthIndex, 1);
+}
+
+/**
+ * Picks the most recent issue at or before `asOf` (defaults to now).
+ * @param issues The issue slugs to choose from.
+ * @param asOf The date to compare against (defaults to the current date/time).
+ * @returns The most recent qualifying issue slug.
+ */
+export function getMostRecentIssue(issues: string[], asOf: Date = new Date()): string {
+  const uniqueIssues = Array.from(new Set(issues));
+  if (uniqueIssues.length === 0) {
+    throw new Error("getMostRecentIssue: no issues given.");
+  }
+  const sortedByDateDesc = uniqueIssues
+    .map((issue) => ({ issue, date: issueSlugToDate(issue) }))
+    .sort((a, b) => b.date.getTime() - a.date.getTime());
+  const mostRecentPastOrPresent = sortedByDateDesc.find(({ date }) => date.getTime() <= asOf.getTime());
+  return (mostRecentPastOrPresent ?? sortedByDateDesc[sortedByDateDesc.length - 1]).issue;
+}
+
+/**
+ * Formats an issue slug (e.g. "april-2026") as a human-readable "Month Year" label.
+ * @param issue The issue slug.
+ * @returns The formatted label, e.g. "April 2026".
+ */
+export function formatIssueDate(issue: string): string {
+  const date = issueSlugToDate(issue);
+  return date.toLocaleString("en-US", { month: "long", year: "numeric" });
+}
+
+/**
+ * The content directory name for an issue slug, e.g. "april-2026" -> "issue-april-2026".
+ * @param issue The issue slug.
+ * @returns The directory name.
+ */
+export function issueDirName(issue: string): string {
+  return `issue-${issue}`;
+}

@@ -1,0 +1,49 @@
+/*
+ * Styling for src/pages/sections.astro.
+ */
+
+.site-main {
+	padding: 1.5rem;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.sections-header {
+	text-align: center;
+	margin-bottom: 2.5rem;
+	border-bottom: 1px solid var(--color-border);
+	padding-bottom: 1.5rem;
+}
+.sections-header h1 {
+	font-family: var(--font-sans);
+	font-size: 2.75rem;
+	margin: 0;
+}
+
+.sections-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+	gap: 1.5rem;
+}
+
+.section-card {
+	display: block;
+	padding: 1.5rem;
+	text-decoration: none;
+	color: inherit;
+}
+.section-card:hover .section-card-name {
+	font-style: italic;
+}
+
+.section-card-name {
+	font-family: var(--font-sans);
+	font-size: 1.4rem;
+	font-weight: bold;
+	margin: 0 0 0.5rem;
+}
+.section-card-description {
+	font-family: var(--font-serif);
+	color: var(--color-subtle);
+	margin: 0;
+}

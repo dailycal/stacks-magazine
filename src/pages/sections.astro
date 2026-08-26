@@ -1,0 +1,25 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import "../styles/sections-index.css";
+import { siteConfig } from "../config/site";
+
+// Alphabetized by name
+const sortedSections = [...siteConfig.sections].sort((a, b) => a.name.localeCompare(b.name));
+---
+
+<PageLayout title="Sections — Stacks Magazine" description="Every section of Stacks Magazine.">
+	<div class="site-main">
+		<header class="sections-header">
+			<h1>Sections</h1>
+		</header>
+
+		<div class="sections-grid">
+			{sortedSections.map((section) => (
+				<a class="section-card" href={`/sections/${section.slug}`}>
+					<h2 class="section-card-name">{section.name}</h2>
+					<p class="section-card-description">{section.description}</p>
+				</a>
+			))}
+		</div>
+	</div>
+</PageLayout>

@@ -26,8 +26,12 @@ interface TocGroup {
 
 // Get the most recent issue and all articles in that issue
 const allArticles = await getAllArticles();
-const currentIssue = getMostRecentIssue(allArticles.map((article) => article.issue));
-const currentIssueArticles = allArticles.filter((article) => article.issue === currentIssue);
+const currentIssue = getMostRecentIssue(
+  allArticles.map((article) => article.issue),
+);
+const currentIssueArticles = allArticles.filter(
+  (article) => article.issue === currentIssue,
+);
 
 // Group the current issue's articles by section
 const articlesBySection = new Map<string, ArticleWithSlugs[]>();
@@ -40,13 +44,17 @@ for (const article of currentIssueArticles) {
 
 // Newest first within each section
 for (const group of articlesBySection.values()) {
-  group.sort((a, b) => b.entry.data.publishDate.getTime() - a.entry.data.publishDate.getTime());
+  group.sort(
+    (a, b) =>
+      b.entry.data.publishDate.getTime() - a.entry.data.publishDate.getTime(),
+  );
 }
 
 // Sections sorted by most articles first, then alphabetically to break ties
 const tableOfContents: TocGroup[] = Array.from(articlesBySection.entries())
   .sort(([sectionA, articlesA], [sectionB, articlesB]) => {
-    if (articlesA.length !== articlesB.length) return articlesB.length - articlesA.length;
+    if (articlesA.length !== articlesB.length)
+      return articlesB.length - articlesA.length;
     return sectionA.localeCompare(sectionB);
   })
   .map(([section, articles]) => ({
@@ -59,12 +67,18 @@ const tableOfContents: TocGroup[] = Array.from(articlesBySection.entries())
   }));
 
 // The issue cover, if one exists at assets/images/<issue directory>/cover.png.
-// Left blank (falls back to the placeholder) when it doesn't.
 const coverImages = import.meta.glob<{ default: ImageMetadata }>(
   "/src/assets/images/*/cover.png",
   { eager: true },
 );
-const coverImage = coverImages[`/src/assets/images/${issueDirName(currentIssue)}/cover.png`]?.default;
+
+const coverImagePath = `/src/assets/images/${issueDirName(currentIssue)}/cover.png`;
+const coverImage = coverImages[coverImagePath]?.default;
+
+if (!coverImage) {
+  console.warn(`[index.astro] No cover image found at ${coverImagePath}.`);
+}
+
 const currentIssueDateLabel = formatIssueDate(currentIssue);
 ---
 
@@ -72,24 +86,36 @@ const currentIssueDateLabel = formatIssueDate(currentIssue);
   <div class="site-main">
     <section class="issue-block">
       <div class="issue-content">
-        {/* Cover: the real cover image if one exists, otherwise a placeholder */}
+        {/* Issue cover */}
         <div class="issue-cover">
-          {/* Frame: sizes/centers once so the image and caption always line up */}
           <div class="issue-cover-frame">
-            <a href="/issues">
+            <a href={`/issues/${currentIssue}`}>
               {
                 coverImage ? (
-                  <Image src={coverImage} alt={`${siteConfig.currentIssue} cover`} />
+                  <>
+                    {/* Cover image */}
+                    <Image
+                      src={coverImage}
+                      alt={`${siteConfig.currentIssue} cover`}
+                    />
+                    {siteConfig.coverAuthor && (
+                      <figcaption class="figcaption-issue-cover">
+                        Cover by {siteConfig.coverAuthor}
+                      </figcaption>
+                    )}
+                  </>
                 ) : (
                   <div class="issue-cover-placeholder">
-                    <span class="issue-cover-placeholder-issue">{siteConfig.currentIssue}</span>
+                    {/* Placeholder cover */}
+                    <span class="issue-cover-placeholder-issue">
+                      {siteConfig.currentIssue}
+                    </span>
                     <span>{currentIssueDateLabel}</span>
                     <span>Issue cover coming soon</span>
                   </div>
                 )
               }
             </a>
-            <figcaption class="figcaption-issue-cover">Cover by</figcaption>
           </div>
         </div>
 
@@ -107,7 +133,9 @@ const currentIssueDateLabel = formatIssueDate(currentIssue);
                       {article.subheadline && (
                         <>
                           <br />
-                          <span class="toc-subtitle">{article.subheadline}</span>
+                          <span class="toc-subtitle">
+                            {article.subheadline}
+                          </span>
                         </>
                       )}
                     </a>

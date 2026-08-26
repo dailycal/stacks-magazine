@@ -1,0 +1,129 @@
+/*
+ * Styling for src/pages/sections/[section]/index.astro.
+ */
+
+.site-main {
+	padding: 1.5rem;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.section-header {
+	text-align: center;
+	margin-bottom: 2.5rem;
+	border-bottom: 1px solid var(--color-border);
+	padding: 1.25rem 1.25rem 1.5rem;
+}
+.section-header h1 {
+	font-family: var(--font-sans);
+	font-weight: 400;
+	font-size: 2.75rem;
+	margin: 0 0 0.5rem;
+}
+.section-header p {
+	color: var(--color-subtle);
+	margin: 0;
+	line-height: 1.2;
+}
+
+.section-empty {
+	text-align: center;
+	color: var(--color-subtle);
+	font-family: var(--font-sans);
+}
+
+/* Article list */
+.article-list {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+}
+.article-card {
+	display: flex;
+	flex-direction: row;
+	gap: calc(1rem + 10px);
+	border-bottom: 1px solid var(--color-border);
+	padding-bottom: 2rem;
+	text-decoration: none;
+	color: inherit;
+	align-items: flex-start;
+}
+.article-card:last-child {
+	border-bottom: none;
+}
+@media (min-width: 1024px) {
+	.article-card:hover {
+		transform: none !important;
+	}
+	.article-card:hover .article-card-title {
+		font-style: italic;
+	}
+}
+
+.article-card-text {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+.article-card-image {
+	flex-basis: 415px;
+	flex-shrink: 0;
+}
+.article-card-image img {
+	width: 100%;
+	height: 100%;
+	aspect-ratio: 4.75 / 3;
+	object-fit: cover;
+	border: 1px solid var(--color-border);
+	display: block;
+}
+
+.article-card-title {
+	font-family: var(--font-sans);
+	font-size: 2rem;
+	font-weight: bold;
+	margin: 0 0 0.5rem;
+	line-height: 1.2;
+}
+.article-card-sub-title {
+	font-family: var(--font-sans);
+	font-size: 1.75rem;
+	font-weight: bold;
+	margin: 0 0 0.5rem;
+	line-height: 1.2;
+}
+.article-card-excerpt {
+	font-family: var(--font-serif);
+	color: var(--color-text);
+	margin: 0;
+	font-size: 1.25rem;
+	line-height: 1.3;
+}
+
+@media (max-width: 768px) {
+	.article-card {
+		flex-direction: column-reverse;
+		gap: 1rem;
+	}
+	.article-card-image {
+		flex-basis: auto;
+		width: 100%;
+		margin: 0;
+	}
+	.article-card-image img {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 3 / 2;
+	}
+	.section-header h1 {
+		font-size: 2rem;
+		font-weight: bold;
+	}
+	.section-header p {
+		font-size: 1.25rem;
+	}
+	.article-card-sub-title {
+		font-size: 1.25rem;
+		font-weight: bold;
+	}
+}

@@ -1,0 +1,87 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+import PageLayout from "../../layouts/PageLayout.astro";
+import "../../styles/section-page.css";
+import { siteConfig } from "../../config/site";
+import { getAllArticles } from "../../lib/issues";
+
+/**
+ * Gets the static paths for all sections.
+ * Used for static site generation.
+ * @returns An array of objects containing each section.
+ */
+export async function getStaticPaths() {
+  return siteConfig.sections.map((section) => ({
+    params: { section: section.slug },
+    props: { section },
+  }));
+}
+
+const { section } = Astro.props;
+
+// This section's articles across all issues, newest first
+const allArticles = await getAllArticles();
+const sectionArticles = allArticles
+  .filter((article) => article.entry.data.section === section.name)
+  .sort(
+    (a, b) =>
+      b.entry.data.publishDate.getTime() - a.entry.data.publishDate.getTime(),
+  );
+---
+
+<PageLayout
+  title={`${section.name} — Stacks Magazine`}
+  description={section.description}
+>
+  <div class="site-main">
+    {/* Section header */}
+    <header class="section-header">
+      <h1>{section.name}</h1>
+      {section.description && <p>{section.description}</p>}
+    </header>
+
+    {/* Article list */}
+    {
+      sectionArticles.length > 0 ? (
+        <div class="article-list">
+          {sectionArticles.map(({ issue, slug, entry }) => (
+            <a class="article-card" href={`/issues/${issue}/${slug}`}>
+              {/* Headline */}
+              <div class="article-card-text">
+                <h3 class="article-card-title">{entry.data.title}</h3>
+                {entry.data.subheadline && (
+                  <h3 class="article-card-sub-title">
+                    {entry.data.subheadline}
+                  </h3>
+                )}
+                {entry.data.excerpt && (
+                  <p class="article-card-excerpt">{entry.data.excerpt}</p>
+                )}
+              </div>
+
+              {/* Featured image */}
+              {entry.data.featuredImage && (
+                <div class="article-card-image">
+                  {typeof entry.data.featuredImage === "string" ? (
+                    <img
+                      src={entry.data.featuredImage}
+                      alt={entry.data.featuredImageAlt ?? ""}
+                    />
+                  ) : (
+                    <Image
+                      src={entry.data.featuredImage as ImageMetadata}
+                      alt={entry.data.featuredImageAlt ?? ""}
+                    />
+                  )}
+                </div>
+              )}
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p class="section-empty">No articles in this section yet.</p>
+      )
+    }
+  </div>
+</PageLayout>

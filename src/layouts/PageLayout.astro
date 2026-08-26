@@ -84,7 +84,7 @@ const navLinksRight: NavLink[] = [
 
         {/* Center logo */}
         <a class="nav-logo" href="/" aria-label="Stacks">
-          <Image src={stacksLogo} alt="Stacks" width={220} height={70} />
+          <Image src={stacksLogo} alt="Stacks" width={220} />
         </a>
 
         {/* Right nav elements */}
@@ -111,7 +111,7 @@ const navLinksRight: NavLink[] = [
       <div class="mobile-bar">
         {/* Logo */}
         <a class="mobile-logo" href="/" aria-label="Stacks">
-          <Image src={stacksLogo} alt="Stacks" width={220} height={70} />
+          <Image src={stacksLogo} alt="Stacks" width={220} />
         </a>
 
         {/* Hamburger menu */}
@@ -174,13 +174,17 @@ const navLinksRight: NavLink[] = [
               target="_blank"
               rel="noopener">The Daily Californian</a
             >
-            <span class="folio-sep" aria-hidden="true">●</span>
+            {siteConfig.currentIssue && (
+              <span class="folio-sep" aria-hidden="true">●</span>
+            )}
           </div>
 
           {/* Current issue */}
-          <div class="folio-right">
-            <span class="folio-item">{siteConfig.currentIssue}</span>
-          </div>
+          {siteConfig.currentIssue && (
+            <div class="folio-right">
+              <span class="folio-item">{siteConfig.currentIssue}</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -194,10 +198,17 @@ const navLinksRight: NavLink[] = [
           rel="noopener">The Daily Californian</a
         >
 
-        <span class="folio-dot" aria-hidden="true">●</span>
-
         {/* Current issue */}
-        <span class="folio-item">{siteConfig.currentIssue}</span>
+        {
+          siteConfig.currentIssue && (
+            <>
+              <span class="folio-dot" aria-hidden="true">
+                ●
+              </span>
+              <span class="folio-item">{siteConfig.currentIssue}</span>
+            </>
+          )
+        }
       </div>
     </div>
 

@@ -1,0 +1,83 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import "../styles/upcoming-events-page.css";
+import { upcomingEvents, weeklyEvents } from "../config/upcoming-events";
+
+// The dated events are stored most-recent-first. Split off however many
+// events at the top share the same leading month name as the very first
+// entry into a "<Month>" section; everything else falls under "Past Events".
+const leadingMonth = upcomingEvents[0]?.date.split(" ")[0];
+const currentMonthEvents = upcomingEvents.filter(
+  (event) => event.date.split(" ")[0] === leadingMonth,
+);
+const pastEvents = upcomingEvents.slice(currentMonthEvents.length);
+---
+
+<PageLayout
+  title="Upcoming Events — Stacks Magazine"
+  description="Upcoming events around Berkeley and the Bay Area."
+>
+  <div class="site-main">
+    <header class="section-header">
+      <h1>Upcoming Events</h1>
+    </header>
+
+    <div class="events-container">
+      <p class="intro-text">
+        This list will be updated continuously. Email <a
+          href="mailto:stacksmag@dailycal.org">stacksmag@dailycal.org</a
+        > with events to add to our calendar!
+      </p>
+
+      {
+        currentMonthEvents.length > 0 && (
+          <>
+            <h2 class="events-month-title">{leadingMonth}</h2>
+            <ul class="events-list">
+              {currentMonthEvents.map((event) => (
+                <li>
+                  <a href={event.link} target="_blank" rel="noopener noreferrer">
+                    {event.date}
+                  </a>{" "}
+                  — <Fragment set:html={event.name} />
+                </li>
+              ))}
+            </ul>
+          </>
+        )
+      }
+
+      {
+        pastEvents.length > 0 && (
+          <>
+            <h2 class="events-month-title">Past Events</h2>
+            <ul class="events-list">
+              {pastEvents.map((event) => (
+                <li>
+                  <a href={event.link} target="_blank" rel="noopener noreferrer">
+                    {event.date}
+                  </a>{" "}
+                  — <Fragment set:html={event.name} />
+                </li>
+              ))}
+            </ul>
+          </>
+        )
+      }
+
+      <h2 class="events-month-title">Weekly events around town</h2>
+      <ul class="events-list">
+        {
+          weeklyEvents.map((event) => (
+            <li>
+              <a href={event.link} target="_blank" rel="noopener noreferrer">
+                {event.date}
+              </a>{" "}
+              — <Fragment set:html={event.name} />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</PageLayout>

@@ -1,11 +1,11 @@
 ---
 import PageLayout from "../layouts/PageLayout.astro";
 import "../styles/sections-index.css";
-import { siteConfig } from "../config/site";
+import { sections } from "../config/sections";
 import { withBase } from "../lib/path";
 
 // Alphabetized by name
-const sortedSections = [...siteConfig.sections].sort((a, b) => a.name.localeCompare(b.name));
+const sortedSections = [...sections].sort((a, b) => a.name.localeCompare(b.name));
 ---
 
 <PageLayout title="Sections — Stacks Magazine" description="Every section of Stacks Magazine.">

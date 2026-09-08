@@ -3,7 +3,7 @@ import type { ImageMetadata } from "astro";
 import { Image } from "astro:assets";
 import PageLayout from "../../layouts/PageLayout.astro";
 import "../../styles/section-page.css";
-import { siteConfig } from "../../config/site";
+import { sections } from "../../config/sections";
 import { getAllArticles } from "../../lib/issues";
 import { withBase } from "../../lib/path";
 
@@ -13,7 +13,7 @@ import { withBase } from "../../lib/path";
  * @returns An array of objects containing each section.
  */
 export async function getStaticPaths() {
-  return siteConfig.sections.map((section) => ({
+  return sections.map((section) => ({
     params: { section: section.slug },
     props: { section },
   }));

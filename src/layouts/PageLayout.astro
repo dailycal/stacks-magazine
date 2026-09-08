@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import { siteConfig } from "../config/site";
+import { getMostRecentIssueMeta } from "../lib/issues";
 import { withBase } from "../lib/path";
 import "../styles/global.css";
 import "../styles/page-layout.css";
@@ -11,6 +11,9 @@ import spiralAnim from "../assets/site/animations/spiral.gif";
 import onBackgroundGif from "../assets/site/animations/on-background.gif";
 import essaysGif from "../assets/site/animations/essays.gif";
 import featuresGif from "../assets/site/animations/features.gif";
+
+// The current issue number, shown in the folio strip.
+const currentIssue = getMostRecentIssueMeta().issue;
 
 // PageLayout component properties
 interface Props {
@@ -175,15 +178,15 @@ const navLinksRight: NavLink[] = [
               target="_blank"
               rel="noopener">The Daily Californian</a
             >
-            {siteConfig.currentIssue && (
+            {currentIssue && (
               <span class="folio-sep" aria-hidden="true">●</span>
             )}
           </div>
 
           {/* Current issue */}
-          {siteConfig.currentIssue && (
+          {currentIssue && (
             <div class="folio-right">
-              <span class="folio-item">{siteConfig.currentIssue}</span>
+              <span class="folio-item">{currentIssue}</span>
             </div>
           )}
         </div>
@@ -201,12 +204,12 @@ const navLinksRight: NavLink[] = [
 
         {/* Current issue */}
         {
-          siteConfig.currentIssue && (
+          currentIssue && (
             <>
               <span class="folio-dot" aria-hidden="true">
                 ●
               </span>
-              <span class="folio-item">{siteConfig.currentIssue}</span>
+              <span class="folio-item">{currentIssue}</span>
             </>
           )
         }

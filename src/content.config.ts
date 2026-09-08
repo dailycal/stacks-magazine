@@ -1,11 +1,10 @@
 import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from 'astro/zod'
-import { siteConfig } from "./config/site";
+import { sections } from "./config/sections";
 
-// The section names articles can be filed under (pretty names, not slugs) —
-// sourced from config/site.ts, which is the source of truth for sections.
-const sectionNames = siteConfig.sections.map((section) => section.name) as [string, ...string[]];
+// The section names articles can be filed under (pretty names, not slugs)
+const sectionNames = sections.map((section) => section.name) as [string, ...string[]];
 
 /**
  * Content collection type definitions of all articles in ./src/content.

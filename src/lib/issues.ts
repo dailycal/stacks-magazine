@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from "astro:content";
+import { issues, type Issue } from "../config/issues";
 
 // Valid months
 const MONTHS = [
@@ -106,4 +107,56 @@ export function formatIssueDate(issue: string): string {
  */
 export function issueDirName(issue: string): string {
   return `issue-${issue}`;
+}
+
+/**
+ * The `issues` config entry with the most recent `date`. Used for the topbar
+ * issue number, where the content collection isn't needed.
+ * @returns The newest issue metadata entry.
+ */
+export function getMostRecentIssueMeta(): Issue {
+  if (issues.length === 0) {
+    throw new Error("config/issues.ts: `issues` is empty.");
+  }
+  return [...issues]
+    .sort((a, b) => issueSlugToDate(b.date).getTime() - issueSlugToDate(a.date).getTime())[0];
+}
+
+/**
+ * The most recent issue slug among the given article folders (plain max by
+ * date, e.g. "april-2026").
+ * @param articleIssues Issue slugs taken from article folders.
+ * @returns The newest issue slug.
+ */
+export function mostRecentIssueFolder(articleIssues: string[]): string {
+  const unique = Array.from(new Set(articleIssues));
+  if (unique.length === 0) {
+    throw new Error("mostRecentIssueFolder: no article issues given.");
+  }
+  return unique
+    .map((issue) => ({ issue, date: issueSlugToDate(issue) }))
+    .sort((a, b) => b.date.getTime() - a.date.getTime())[0].issue;
+}
+
+/**
+ * The current issue's metadata, validated against the content folders: the
+ * newest `issues` config entry must have the same `date` as the newest issue
+ * folder in src/content, otherwise this throws. Call this from a page that
+ * always builds (e.g. the homepage) so a content folder can't ship without its
+ * issues.ts entry.
+ * @param articleIssues Issue slugs taken from article folders (e.g. from getAllArticles()).
+ * @returns The newest issue metadata entry.
+ */
+export function getCurrentIssue(articleIssues: string[]): Issue {
+  const meta = getMostRecentIssueMeta();
+  const folder = mostRecentIssueFolder(articleIssues);
+  if (meta.date !== folder) {
+    throw new Error(
+      `Issue mismatch: the most recent entry in src/config/issues.ts is ` +
+      `"${meta.date}", but the most recent issue folder in src/content is ` +
+      `"issue-${folder}". Add or correct the issues.ts entry so its \`date\` ` +
+      `matches the newest content folder.`,
+    );
+  }
+  return meta;
 }

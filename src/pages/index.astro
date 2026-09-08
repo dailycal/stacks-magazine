@@ -3,12 +3,10 @@ import type { ImageMetadata } from "astro";
 import { Image } from "astro:assets";
 import PageLayout from "../layouts/PageLayout.astro";
 import "../styles/index-page.css";
-import { siteConfig } from "../config/site";
 import {
   getAllArticles,
-  getMostRecentIssue,
+  getCurrentIssue,
   formatIssueDate,
-  issueDirName,
   type ArticleWithSlugs,
 } from "../lib/issues";
 import { withBase } from "../lib/path";
@@ -27,9 +25,12 @@ interface TocGroup {
 
 // Get the most recent issue and all articles in that issue
 const allArticles = await getAllArticles();
-const currentIssue = getMostRecentIssue(
+// The current issue's metadata. Throws if the newest src/config/issues.ts entry
+// doesn't match the newest issue folder in src/content.
+const currentIssueMeta = getCurrentIssue(
   allArticles.map((article) => article.issue),
 );
+const currentIssue = currentIssueMeta.date;
 const currentIssueArticles = allArticles.filter(
   (article) => article.issue === currentIssue,
 );
@@ -67,13 +68,13 @@ const tableOfContents: TocGroup[] = Array.from(articlesBySection.entries())
     })),
   }));
 
-// The issue cover, if one exists at assets/images/<issue directory>/cover.png.
+// The issue cover named by the current issues.ts entry
 const coverImages = import.meta.glob<{ default: ImageMetadata }>(
-  "/src/assets/images/*/cover.png",
+  "/src/assets/covers/*.{png,jpg,jpeg,webp}",
   { eager: true },
 );
 
-const coverImagePath = `/src/assets/images/${issueDirName(currentIssue)}/cover.png`;
+const coverImagePath = `/src/assets/${currentIssueMeta.cover}`;
 const coverImage = coverImages[coverImagePath]?.default;
 
 if (!coverImage) {
@@ -97,11 +98,11 @@ const currentIssueDateLabel = formatIssueDate(currentIssue);
                     {/* Cover image */}
                     <Image
                       src={coverImage}
-                      alt={`${siteConfig.currentIssue} cover`}
+                      alt={`${currentIssueMeta.issue} cover`}
                     />
-                    {siteConfig.coverAuthor && (
+                    {currentIssueMeta.coverAuthor && (
                       <figcaption class="figcaption-issue-cover">
-                        Cover by {siteConfig.coverAuthor}
+                        Cover by {currentIssueMeta.coverAuthor}
                       </figcaption>
                     )}
                   </>
@@ -109,7 +110,7 @@ const currentIssueDateLabel = formatIssueDate(currentIssue);
                   <div class="issue-cover-placeholder">
                     {/* Placeholder cover */}
                     <span class="issue-cover-placeholder-issue">
-                      {siteConfig.currentIssue}
+                      {currentIssueMeta.issue}
                     </span>
                     <span>{currentIssueDateLabel}</span>
                     <span>Issue cover coming soon</span>

@@ -13,8 +13,8 @@ export const siteConfig = {
 			description: "Longform commentary and news analysis.",
 		},
 		{
-			name: "Off the Record",
-			slug: "off-the-record",
+			name: "Essays",
+			slug: "essays",
 			description: "Personal narratives and essays.",
 		},
 		{

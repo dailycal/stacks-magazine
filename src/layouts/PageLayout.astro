@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { siteConfig } from "../config/site";
+import { withBase } from "../lib/path";
 import "../styles/global.css";
 import "../styles/page-layout.css";
 import stacksLogo from "../assets/site/stacks-logo.png";
@@ -57,8 +58,8 @@ const navLinksRight: NavLink[] = [
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="generator" content={Astro.generator} />
   <meta name="description" content={description} />
-  <link rel="icon" type="image/png" href="/favicon.png" />
-  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" href={withBase("/favicon.png")} />
+  <link rel="icon" href={withBase("/favicon.ico")} />
   <title>{title}</title>
   <link
     rel="stylesheet"
@@ -76,21 +77,21 @@ const navLinksRight: NavLink[] = [
         {/* Left nav elements */}
         {
           navLinksLeft.map((item) => (
-            <a href={item.href} class="nav-item" data-gif={item.gif}>
+            <a href={withBase(item.href)} class="nav-item" data-gif={item.gif}>
               {item.label}
             </a>
           ))
         }
 
         {/* Center logo */}
-        <a class="nav-logo" href="/" aria-label="Stacks">
+        <a class="nav-logo" href={withBase("/")} aria-label="Stacks">
           <Image src={stacksLogo} alt="Stacks" width={220} />
         </a>
 
         {/* Right nav elements */}
         {
           navLinksRight.map((item) => (
-            <a href={item.href} class="nav-item" data-gif={item.gif}>
+            <a href={withBase(item.href)} class="nav-item" data-gif={item.gif}>
               {item.label}
             </a>
           ))
@@ -98,9 +99,9 @@ const navLinksRight: NavLink[] = [
 
         {/* About dropdown */}
         <div class="nav-item-group">
-          <a href="/about" class="nav-item nav-item-parent">About</a>
+          <a href={withBase("/about")} class="nav-item nav-item-parent">About</a>
           <div class="nav-dropdown" aria-label="About submenu">
-            <a href="/issues" class="nav-item nav-item-sub">Issues</a>
+            <a href={withBase("/issues")} class="nav-item nav-item-sub">Issues</a>
           </div>
         </div>
       </nav>
@@ -110,7 +111,7 @@ const navLinksRight: NavLink[] = [
     <div class="mobile-only" role="banner" aria-label="Mobile navigation">
       <div class="mobile-bar">
         {/* Logo */}
-        <a class="mobile-logo" href="/" aria-label="Stacks">
+        <a class="mobile-logo" href={withBase("/")} aria-label="Stacks">
           <Image src={stacksLogo} alt="Stacks" width={220} />
         </a>
 
@@ -134,7 +135,7 @@ const navLinksRight: NavLink[] = [
           [...navLinksLeft, ...navLinksRight].map((item, i) =>
             item.gif ? (
               <a
-                href={item.href}
+                href={withBase(item.href)}
                 class="nav-item has-gif"
                 data-gif={item.gif}
                 style={`--delay:${i * 0.1}s`}
@@ -142,7 +143,7 @@ const navLinksRight: NavLink[] = [
                 <span class="nav-text">{item.label}</span>
               </a>
             ) : (
-              <a href={item.href} class="nav-item">
+              <a href={withBase(item.href)} class="nav-item">
                 {item.label}
               </a>
             ),
@@ -150,8 +151,8 @@ const navLinksRight: NavLink[] = [
         }
 
         {/* About and issues links */}
-        <a href="/about" class="nav-item separator">About</a>
-        <a href="/issues" class="nav-item">Issues</a>
+        <a href={withBase("/about")} class="nav-item separator">About</a>
+        <a href={withBase("/issues")} class="nav-item">Issues</a>
       </nav>
     </div>
 

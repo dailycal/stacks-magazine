@@ -5,6 +5,7 @@ import PageLayout from "../../layouts/PageLayout.astro";
 import "../../styles/section-page.css";
 import { siteConfig } from "../../config/site";
 import { getAllArticles } from "../../lib/issues";
+import { withBase } from "../../lib/path";
 
 /**
  * Gets the static paths for all sections.
@@ -46,7 +47,7 @@ const sectionArticles = allArticles
       sectionArticles.length > 0 ? (
         <div class="article-list">
           {sectionArticles.map(({ issue, slug, entry }) => (
-            <a class="article-card" href={`/issues/${issue}/${slug}`}>
+            <a class="article-card" href={withBase(`/issues/${issue}/${slug}`)}>
               {/* Headline */}
               <div class="article-card-text">
                 <h3 class="article-card-title">{entry.data.title}</h3>

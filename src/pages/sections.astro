@@ -2,6 +2,7 @@
 import PageLayout from "../layouts/PageLayout.astro";
 import "../styles/sections-index.css";
 import { siteConfig } from "../config/site";
+import { withBase } from "../lib/path";
 
 // Alphabetized by name
 const sortedSections = [...siteConfig.sections].sort((a, b) => a.name.localeCompare(b.name));
@@ -15,7 +16,7 @@ const sortedSections = [...siteConfig.sections].sort((a, b) => a.name.localeComp
 
 		<div class="sections-grid">
 			{sortedSections.map((section) => (
-				<a class="section-card" href={`/sections/${section.slug}`}>
+				<a class="section-card" href={withBase(`/sections/${section.slug}`)}>
 					<h2 class="section-card-name">{section.name}</h2>
 					<p class="section-card-description">{section.description}</p>
 				</a>

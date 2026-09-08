@@ -18,8 +18,8 @@ export const siteConfig = {
 			description: "Personal narratives and essays.",
 		},
 		{
-			name: "Notes",
-			slug: "notes",
+			name: "Features",
+			slug: "features",
 			description: "Local arts and culture.",
 		},
 		{

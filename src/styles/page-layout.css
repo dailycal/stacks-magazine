@@ -491,7 +491,7 @@ html.spin-once .floating-spin-btn {
 		opacity: 0.1;
 	}
 
-	.mobile-menu a[data-gif*="notes.gif"] .mobile-nav-gif {
+	.mobile-menu a[data-gif*="features."] .mobile-nav-gif {
 		width: 65% !important;
 		max-height: 100px !important;
 		object-fit: contain;

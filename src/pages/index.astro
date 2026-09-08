@@ -11,6 +11,7 @@ import {
   issueDirName,
   type ArticleWithSlugs,
 } from "../lib/issues";
+import { withBase } from "../lib/path";
 
 // Type definitions for table of contents entries
 interface TocArticle {
@@ -60,7 +61,7 @@ const tableOfContents: TocGroup[] = Array.from(articlesBySection.entries())
   .map(([section, articles]) => ({
     category: section,
     articles: articles.map((article) => ({
-      href: `/issues/${article.issue}/${article.slug}`,
+      href: withBase(`/issues/${article.issue}/${article.slug}`),
       title: article.entry.data.title,
       subheadline: article.entry.data.subheadline,
     })),
@@ -89,7 +90,7 @@ const currentIssueDateLabel = formatIssueDate(currentIssue);
         {/* Issue cover */}
         <div class="issue-cover">
           <div class="issue-cover-frame">
-            <a href={`/issues/${currentIssue}`}>
+            <a href={withBase(`/issues/${currentIssue}`)}>
               {
                 coverImage ? (
                   <>

@@ -5,5 +5,8 @@ import mdx from '@astrojs/mdx';
 
 // https://astro.build/config
 export default defineConfig({
+  // Deployed to GitHub Pages at https://dailycal.github.io/stacks-magazine/
+  site: 'https://dailycal.github.io',
+  base: '/stacks-magazine',
   integrations: [mdx()]
 });

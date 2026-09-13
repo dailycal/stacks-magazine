@@ -24,7 +24,7 @@ const issueData: Issue[] = [
 		issue: "Issue II",
 		date: "april-2026",
 		cover: "covers/issue-april-2026.png",
-		pdf: "issue-pdf/Issue_2.pdf",
+		pdf: "https://media.dailycal.org/stacks-magazine/issues/Issue_2.pdf",
 		coverAuthor: "Milan Rafaelov",
 	},
 	{
@@ -38,7 +38,7 @@ const issueData: Issue[] = [
 		issue: "Issue I",
 		date: "december-2025",
 		cover: "covers/issue-dec-2025.png",
-		pdf: "issue-pdf/Issue_1.pdf",
+		pdf: "https://media.dailycal.org/stacks-magazine/issues/Issue_1.pdf",
 		coverAuthor: "",
 	},
 ];

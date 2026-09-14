@@ -1,0 +1,27 @@
+/*
+ * Shared styling for the cover-or-placeholder art rendered by
+ * src/components/IssueCoverArt.astro. Used by both the homepage and the
+ * issues index page.
+ */
+
+/* Placeholder shown when an issue has no cover.png yet. Sized to the same
+   1190x1546 cover dimensions as a real cover image, so pages don't need to
+   size it themselves. */
+.issue-cover-placeholder {
+	box-sizing: border-box;
+	width: 100%;
+	aspect-ratio: 1190 / 1546;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.35rem;
+	border: 1px dashed var(--color-border);
+	color: var(--color-subtle);
+	font-family: var(--font-sans);
+	text-align: center;
+	padding: 1rem;
+}
+.issue-cover-placeholder-issue {
+	font-weight: 700;
+}

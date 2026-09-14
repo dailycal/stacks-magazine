@@ -1,0 +1,74 @@
+/*
+ * Styling for src/pages/issues.astro.
+ */
+
+.site-main {
+	padding: 1.5rem;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.issues-header {
+	text-align: center;
+	margin-bottom: 2.5rem;
+	border-bottom: 1px solid var(--color-border);
+	padding-bottom: 1.5rem;
+}
+.issues-header h1 {
+	font-family: var(--font-sans);
+	font-size: 2.75rem;
+	margin: 0;
+}
+
+/* Max 3 per row, wrapping to fewer columns as the viewport narrows. */
+.issues-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 2.5rem 2rem;
+}
+@media (min-width: 640px) {
+	.issues-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+@media (min-width: 960px) {
+	.issues-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+.issue-card {
+	display: block;
+	text-decoration: none;
+	color: inherit;
+}
+
+.issue-card-cover img {
+	width: 100%;
+	aspect-ratio: 1190 / 1546;
+	height: auto;
+	display: block;
+	object-fit: cover;
+}
+
+/* Always present (even with no author) so every card's title lines up. */
+.issue-card-caption {
+	margin: 0.2rem 0 0;
+	font-family: var(--font-serif);
+	font-style: italic;
+	font-size: 0.8rem;
+	color: var(--color-subtle);
+	text-align: left;
+}
+
+.issue-card-title {
+	margin: 0.25rem 0 0;
+	font-family: var(--font-sans);
+	font-weight: 700;
+	text-align: center;
+	text-transform: uppercase;
+	letter-spacing: 0.02em;
+}
+.issue-card:hover .issue-card-title {
+	font-style: italic;
+}

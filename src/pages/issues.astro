@@ -29,7 +29,7 @@ const sortedIssues = [...issues].sort(
 								<IssueCoverArt issue={issue} dateLabel={dateLabel} />
 							</div>
 							<p class="issue-card-caption">
-								{issue.coverAuthor ? `Cover by ${issue.coverAuthor}` : " "}
+								{issue.coverAuthor ? `Cover by ${issue.coverAuthor}` : '\u00A0'}
 							</p>
 							<p class="issue-card-title">
 								{issue.issue} &bull; {dateLabel}

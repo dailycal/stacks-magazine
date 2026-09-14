@@ -1,0 +1,43 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import IssueCoverArt from "../components/IssueCoverArt.astro";
+import "../styles/issue-cover.css";
+import "../styles/issues-index.css";
+import { issues } from "../config/issues";
+import { formatIssueDate, issueSlugToDate } from "../lib/issues";
+import { withBase } from "../lib/path";
+
+// Newest first, regardless of issues.ts array order.
+const sortedIssues = [...issues].sort(
+	(a, b) => issueSlugToDate(b.date).getTime() - issueSlugToDate(a.date).getTime(),
+);
+---
+
+<PageLayout title="Issues - Stacks Magazine" description="Every issue of Stacks Magazine.">
+	<div class="site-main">
+		<header class="issues-header">
+			<h1>Issues</h1>
+		</header>
+
+		<div class="issues-grid">
+			{
+				sortedIssues.map((issue) => {
+					const dateLabel = formatIssueDate(issue.date);
+					return (
+						<a class="issue-card" href={withBase(`/issues/${issue.date}`)}>
+							<div class="issue-card-cover">
+								<IssueCoverArt issue={issue} dateLabel={dateLabel} />
+							</div>
+							<p class="issue-card-caption">
+								{issue.coverAuthor ? `Cover by ${issue.coverAuthor}` : " "}
+							</p>
+							<p class="issue-card-title">
+								{issue.issue} &bull; {dateLabel}
+							</p>
+						</a>
+					);
+				})
+			}
+		</div>
+	</div>
+</PageLayout>

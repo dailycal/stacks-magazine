@@ -52,36 +52,15 @@
 	}
 }
 
-/* The cover always keeps the standard cover's dimensions (1190x1546px),
-   whether it's the real cover image or the placeholder. */
-.issue-cover img,
-.issue-cover-placeholder {
+/* The cover image always keeps the standard cover's dimensions (1190x1546px).
+   The placeholder's own sizing lives in issue-cover.css, shared with the
+   issues index page. */
+.issue-cover img {
 	width: 100%;
 	aspect-ratio: 1190 / 1546;
-}
-
-.issue-cover img {
 	height: auto;
 	display: block;
 	object-fit: cover;
-}
-
-/* Placeholder shown when an issue has no cover.png yet */
-.issue-cover-placeholder {
-	box-sizing: border-box;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	gap: 0.35rem;
-	border: 1px dashed var(--color-border);
-	color: var(--color-subtle);
-	font-family: var(--font-sans);
-	text-align: center;
-	padding: 1rem;
-}
-.issue-cover-placeholder-issue {
-	font-weight: 700;
 }
 
 /* TOC: allow multiple titles per category (no lines between titles) */

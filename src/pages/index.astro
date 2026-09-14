@@ -1,7 +1,7 @@
 ---
-import type { ImageMetadata } from "astro";
-import { Image } from "astro:assets";
 import PageLayout from "../layouts/PageLayout.astro";
+import IssueCoverArt from "../components/IssueCoverArt.astro";
+import "../styles/issue-cover.css";
 import "../styles/index-page.css";
 import {
   getAllArticles,
@@ -68,19 +68,6 @@ const tableOfContents: TocGroup[] = Array.from(articlesBySection.entries())
     })),
   }));
 
-// The issue cover named by the current issues.ts entry
-const coverImages = import.meta.glob<{ default: ImageMetadata }>(
-  "/src/assets/covers/*.{png,jpg,jpeg,webp}",
-  { eager: true },
-);
-
-const coverImagePath = `/src/assets/${currentIssueMeta.cover}`;
-const coverImage = coverImages[coverImagePath]?.default;
-
-if (!coverImage) {
-  console.warn(`[index.astro] No cover image found at ${coverImagePath}.`);
-}
-
 const currentIssueDateLabel = formatIssueDate(currentIssue);
 ---
 
@@ -92,31 +79,15 @@ const currentIssueDateLabel = formatIssueDate(currentIssue);
         <div class="issue-cover">
           <div class="issue-cover-frame">
             <a href={withBase(`/issues/${currentIssue}`)}>
-              {
-                coverImage ? (
-                  <>
-                    {/* Cover image */}
-                    <Image
-                      src={coverImage}
-                      alt={`${currentIssueMeta.issue} cover`}
-                    />
-                    {currentIssueMeta.coverAuthor && (
-                      <figcaption class="figcaption-issue-cover">
-                        Cover by {currentIssueMeta.coverAuthor}
-                      </figcaption>
-                    )}
-                  </>
-                ) : (
-                  <div class="issue-cover-placeholder">
-                    {/* Placeholder cover */}
-                    <span class="issue-cover-placeholder-issue">
-                      {currentIssueMeta.issue}
-                    </span>
-                    <span>{currentIssueDateLabel}</span>
-                    <span>Issue cover coming soon</span>
-                  </div>
-                )
-              }
+              <IssueCoverArt
+                issue={currentIssueMeta}
+                dateLabel={currentIssueDateLabel}
+              />
+              {currentIssueMeta.coverAuthor && (
+                <figcaption class="figcaption-issue-cover">
+                  Cover by {currentIssueMeta.coverAuthor}
+                </figcaption>
+              )}
             </a>
           </div>
         </div>

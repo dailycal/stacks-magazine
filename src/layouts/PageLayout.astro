@@ -1,7 +1,9 @@
 ---
+import type { ImageMetadata } from "astro";
 import { Image } from "astro:assets";
 import { getMostRecentIssueMeta } from "../lib/issues";
 import { withBase } from "../lib/path";
+import SEO from "../components/SEO.astro";
 import "../styles/global.css";
 import "../styles/page-layout.css";
 import stacksLogo from "../assets/site/stacks-logo.png";
@@ -18,12 +20,28 @@ const currentIssue = getMostRecentIssueMeta().issue;
 // PageLayout component properties
 interface Props {
   title: string;
+  headline?: string;
   description?: string;
+  image?: ImageMetadata | string;
+  imageAlt?: string;
+  seoType?: "website" | "article";
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  authors?: string[];
+  noindex?: boolean;
 }
 
 const {
   title,
-  description = "Stacks is The Daily Californian's official magazine.",
+  headline,
+  description,
+  image,
+  imageAlt,
+  seoType,
+  publishedTime,
+  modifiedTime,
+  authors,
+  noindex,
 } = Astro.props;
 
 // Navigation link interface
@@ -60,10 +78,20 @@ const navLinksRight: NavLink[] = [
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="generator" content={Astro.generator} />
-  <meta name="description" content={description} />
   <link rel="icon" type="image/png" href={withBase("/favicon.png")} />
   <link rel="icon" href={withBase("/favicon.ico")} />
-  <title>{title}</title>
+  <SEO
+    title={title}
+    headline={headline}
+    description={description}
+    image={image}
+    imageAlt={imageAlt}
+    type={seoType}
+    publishedTime={publishedTime}
+    modifiedTime={modifiedTime}
+    authors={authors}
+    noindex={noindex}
+  />
   <link
     rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700&display=swap"

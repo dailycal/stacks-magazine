@@ -1,0 +1,160 @@
+---
+/**
+ * Per-page SEO: title/description, canonical link, robots directive, Open
+ * Graph + Twitter Card tags, and JSON-LD structured data (WebSite by
+ * default, NewsArticle for article pages). Rendered once in PageLayout's
+ * <head> so every page gets it automatically.
+ */
+import type { ImageMetadata } from "astro";
+import { getMostRecentIssueMeta } from "../lib/issues";
+import { withBase } from "../lib/path";
+import stacksLogo from "../assets/site/stacks-logo.png";
+
+export interface Props {
+  title: string;
+  /**
+   * The article's plain headline for JSON-LD, without any site-name suffix
+   * (Google's structured-data guidelines flag that as boilerplate). Defaults
+   * to `title`; pass this separately when `title` has a suffix like
+   * "Headline — Stacks Magazine".
+   */
+  headline?: string;
+  description?: string;
+  /** Social share image. Defaults to the current issue's cover. */
+  image?: ImageMetadata | string;
+  imageAlt?: string;
+  type?: "website" | "article";
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  authors?: string[];
+  /** Keep a page out of search results (e.g. utility pages). */
+  noindex?: boolean;
+}
+
+const SITE_NAME = "Stacks Magazine";
+const DEFAULT_DESCRIPTION =
+  "Stacks is The Daily Californian's official magazine.";
+
+const {
+  title,
+  headline = title,
+  description = DEFAULT_DESCRIPTION,
+  image,
+  imageAlt,
+  type = "website",
+  publishedTime,
+  modifiedTime,
+  authors,
+  noindex = false,
+} = Astro.props;
+
+// Astro.site is always set (see astro.config.mjs); non-null for URL joins below.
+const site = Astro.site!;
+const canonicalURL = new URL(Astro.url.pathname, site);
+
+// Default social image: the current issue's cover, resolved the same way
+// IssueCoverArt does (glob import, since `cover` is a src/assets-relative path).
+const coverImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/covers/*.{png,jpg,jpeg,webp}",
+  { eager: true },
+);
+const defaultCoverImage =
+  coverImages[`/src/assets/${getMostRecentIssueMeta().cover}`]?.default;
+
+function toAbsoluteImage(source: ImageMetadata | string) {
+  if (typeof source === "string") {
+    return { url: new URL(source, site).href, width: undefined, height: undefined };
+  }
+  return {
+    url: new URL(source.src, site).href,
+    width: source.width,
+    height: source.height,
+  };
+}
+
+const imageSource = image ?? defaultCoverImage;
+const ogImage = imageSource ? toAbsoluteImage(imageSource) : undefined;
+
+const publisher = {
+  "@type": "Organization",
+  name: SITE_NAME,
+  logo: { "@type": "ImageObject", url: new URL(stacksLogo.src, site).href },
+};
+
+const structuredData =
+  type === "article" && publishedTime
+    ? {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        headline,
+        description,
+        ...(ogImage ? { image: [ogImage.url] } : {}),
+        datePublished: publishedTime.toISOString(),
+        dateModified: (modifiedTime ?? publishedTime).toISOString(),
+        author:
+          authors && authors.length > 0
+            ? authors.map((name) => ({ "@type": "Person", name }))
+            : [publisher],
+        publisher,
+        mainEntityOfPage: { "@type": "WebPage", "@id": canonicalURL.href },
+      }
+    : {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: SITE_NAME,
+        url: new URL(withBase("/"), site).href,
+        publisher,
+      };
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalURL.href} />
+<meta
+  name="robots"
+  content={noindex ? "noindex, nofollow" : "index, follow"}
+/>
+<meta name="theme-color" content="#ffffff" />
+
+{/* Open Graph */}
+<meta property="og:type" content={type === "article" ? "article" : "website"} />
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalURL.href} />
+<meta property="og:locale" content="en_US" />
+{ogImage && <meta property="og:image" content={ogImage.url} />}
+{ogImage?.width && (
+  <meta property="og:image:width" content={String(ogImage.width)} />
+)}
+{ogImage?.height && (
+  <meta property="og:image:height" content={String(ogImage.height)} />
+)}
+{imageAlt && <meta property="og:image:alt" content={imageAlt} />}
+{type === "article" && publishedTime && (
+  <meta
+    property="article:published_time"
+    content={publishedTime.toISOString()}
+  />
+)}
+{type === "article" && modifiedTime && (
+  <meta
+    property="article:modified_time"
+    content={modifiedTime.toISOString()}
+  />
+)}
+{type === "article" &&
+  authors?.map((name) => <meta property="article:author" content={name} />)}
+
+{/* Twitter Card */}
+<meta
+  name="twitter:card"
+  content={ogImage ? "summary_large_image" : "summary"}
+/>
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{ogImage && <meta name="twitter:image" content={ogImage.url} />}
+{imageAlt && <meta name="twitter:image:alt" content={imageAlt} />}
+
+{/* Structured data */}
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />

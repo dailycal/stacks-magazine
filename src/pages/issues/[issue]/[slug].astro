@@ -58,7 +58,16 @@ const authorsText = authors.length > 0 ? authors.join(" & ") : null;
 const isoDate = publishDate.toISOString().slice(0, 10);
 ---
 
-<PageLayout title={title} description={subheadline}>
+<PageLayout
+  title={`${title} — Stacks Magazine`}
+  headline={title}
+  description={subheadline ?? title}
+  seoType="article"
+  publishedTime={publishDate}
+  authors={authors}
+  image={featuredImage}
+  imageAlt={featuredImageAlt}
+>
   <article class="article-full">
     {/* Header */}
     <header class="article-header">

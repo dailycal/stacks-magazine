@@ -1,27 +1,11 @@
 ---
 import PageLayout from "../layouts/PageLayout.astro";
-import IssueCoverArt from "../components/IssueCoverArt.astro";
+import IssueSpread from "../components/IssueSpread.astro";
 import "../styles/issue-cover.css";
+import "../styles/issue-spread.css";
 import "../styles/index-page.css";
-import {
-  getAllArticles,
-  getCurrentIssue,
-  formatIssueDate,
-  type ArticleWithSlugs,
-} from "../lib/issues";
+import { getAllArticles, getCurrentIssue, buildTableOfContents } from "../lib/issues";
 import { withBase } from "../lib/path";
-
-// Type definitions for table of contents entries
-interface TocArticle {
-  href: string;
-  title: string;
-  subheadline?: string;
-}
-
-interface TocGroup {
-  category: string;
-  articles: TocArticle[];
-}
 
 // Get the most recent issue and all articles in that issue
 const allArticles = await getAllArticles();
@@ -31,94 +15,17 @@ const currentIssueMeta = getCurrentIssue(
   allArticles.map((article) => article.issue),
 );
 const currentIssue = currentIssueMeta.date;
-const currentIssueArticles = allArticles.filter(
-  (article) => article.issue === currentIssue,
-);
-
-// Group the current issue's articles by section
-const articlesBySection = new Map<string, ArticleWithSlugs[]>();
-for (const article of currentIssueArticles) {
-  const section = article.entry.data.section;
-  const group = articlesBySection.get(section) ?? [];
-  group.push(article);
-  articlesBySection.set(section, group);
-}
-
-// Newest first within each section
-for (const group of articlesBySection.values()) {
-  group.sort(
-    (a, b) =>
-      b.entry.data.publishDate.getTime() - a.entry.data.publishDate.getTime(),
-  );
-}
-
-// Sections sorted by most articles first, then alphabetically to break ties
-const tableOfContents: TocGroup[] = Array.from(articlesBySection.entries())
-  .sort(([sectionA, articlesA], [sectionB, articlesB]) => {
-    if (articlesA.length !== articlesB.length)
-      return articlesB.length - articlesA.length;
-    return sectionA.localeCompare(sectionB);
-  })
-  .map(([section, articles]) => ({
-    category: section,
-    articles: articles.map((article) => ({
-      href: withBase(`/issues/${article.issue}/${article.slug}`),
-      title: article.entry.data.title,
-      subheadline: article.entry.data.subheadline,
-    })),
-  }));
-
-const currentIssueDateLabel = formatIssueDate(currentIssue);
+const tableOfContents = buildTableOfContents(currentIssue, allArticles);
 ---
 
 <PageLayout title="Stacks Magazine">
   <div class="site-main">
     <section class="issue-block">
-      <div class="issue-content">
-        {/* Issue cover */}
-        <div class="issue-cover">
-          <div class="issue-cover-frame">
-            <a href={withBase(`/issues/${currentIssue}`)}>
-              <IssueCoverArt
-                issue={currentIssueMeta}
-                dateLabel={currentIssueDateLabel}
-              />
-              {currentIssueMeta.coverAuthor && (
-                <figcaption class="figcaption-issue-cover">
-                  Cover by {currentIssueMeta.coverAuthor}
-                </figcaption>
-              )}
-            </a>
-          </div>
-        </div>
-
-        {/* Table of contents */}
-        <div class="issue-toc">
-          <h2>In This Issue</h2>
-          <ul>
-            {
-              tableOfContents.map((group) => (
-                <li class="toc-group">
-                  <span class="toc-category">{group.category}</span>
-                  {group.articles.map((article) => (
-                    <a class="toc-title" href={article.href}>
-                      {article.title}
-                      {article.subheadline && (
-                        <>
-                          <br />
-                          <span class="toc-subtitle">
-                            {article.subheadline}
-                          </span>
-                        </>
-                      )}
-                    </a>
-                  ))}
-                </li>
-              ))
-            }
-          </ul>
-        </div>
-      </div>
+      <IssueSpread
+        issue={currentIssueMeta}
+        tableOfContents={tableOfContents}
+        coverHref={withBase(`/issues/${currentIssue}`)}
+      />
 
       {/* About statement */}
       <div class="about-statement">

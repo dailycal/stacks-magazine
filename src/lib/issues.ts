@@ -1,5 +1,6 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 import { issues, type Issue } from "../config/issues";
+import { withBase } from "./path";
 
 // Valid months
 const MONTHS = [
@@ -42,6 +43,17 @@ export interface ArticleWithSlugs {
   entry: CollectionEntry<"articles">;
 }
 
+export interface TocArticle {
+  href: string;
+  title: string;
+  subheadline?: string;
+}
+
+export interface TocGroup {
+  category: string;
+  articles: TocArticle[];
+}
+
 /**
  * Gets every article in the collection with its issue and article slugs formatted.
  * @returns A promise resolving to an array of article objects with issue and slug properties.
@@ -52,6 +64,47 @@ export async function getAllArticles(): Promise<ArticleWithSlugs[]> {
     const [dirName, slug] = entry.id.split("/");
     return { issue: parseIssueDirName(dirName), slug, entry };
   });
+}
+
+/**
+ * Groups one issue's articles by section for a table-of-contents listing:
+ * newest first within each section, sections ordered by article count (most
+ * first) then alphabetically to break ties. Shared by the homepage and the
+ * per-issue archive page so both render the same "In This Issue" listing.
+ * @param issue The issue slug (e.g. "april-2026") to filter articles down to.
+ * @param articles Every article across all issues (e.g. from getAllArticles()).
+ * @returns The issue's articles grouped into TOC sections.
+ */
+export function buildTableOfContents(issue: string, articles: ArticleWithSlugs[]): TocGroup[] {
+  const issueArticles = articles.filter((article) => article.issue === issue);
+
+  const bySection = new Map<string, ArticleWithSlugs[]>();
+  for (const article of issueArticles) {
+    const section = article.entry.data.section;
+    const group = bySection.get(section) ?? [];
+    group.push(article);
+    bySection.set(section, group);
+  }
+
+  for (const group of bySection.values()) {
+    group.sort(
+      (a, b) => b.entry.data.publishDate.getTime() - a.entry.data.publishDate.getTime(),
+    );
+  }
+
+  return Array.from(bySection.entries())
+    .sort(([sectionA, articlesA], [sectionB, articlesB]) => {
+      if (articlesA.length !== articlesB.length) return articlesB.length - articlesA.length;
+      return sectionA.localeCompare(sectionB);
+    })
+    .map(([category, group]) => ({
+      category,
+      articles: group.map((article) => ({
+        href: withBase(`/issues/${article.issue}/${article.slug}`),
+        title: article.entry.data.title,
+        subheadline: article.entry.data.subheadline,
+      })),
+    }));
 }
 
 /**

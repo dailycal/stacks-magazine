@@ -1,0 +1,46 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import IssueSpread from "../../components/IssueSpread.astro";
+import "../../styles/issue-cover.css";
+import "../../styles/issue-spread.css";
+import "../../styles/issue-page.css";
+import { issues } from "../../config/issues";
+import { getAllArticles, buildTableOfContents, formatIssueDate } from "../../lib/issues";
+
+/**
+ * Gets the static paths for every issue in src/config/issues.ts, each with
+ * its own table of contents built from that issue's articles.
+ * @returns An array of objects containing the issue param and its metadata/TOC props.
+ */
+export async function getStaticPaths() {
+	const allArticles = await getAllArticles();
+	return issues.map((issueMeta) => ({
+		params: { issue: issueMeta.date },
+		props: {
+			issueMeta,
+			tableOfContents: buildTableOfContents(issueMeta.date, allArticles),
+		},
+	}));
+}
+
+const { issueMeta, tableOfContents } = Astro.props;
+const dateLabel = formatIssueDate(issueMeta.date);
+---
+
+<PageLayout
+	title={`${issueMeta.issue} — Stacks Magazine`}
+	description={`Articles from ${issueMeta.issue}, ${dateLabel}.`}
+>
+	<div class="site-main">
+		<header class="issue-page-header">
+			<p class="issue-page-eyebrow">Issue Archive</p>
+			<h1 class="issue-page-title">{issueMeta.issue} &bull; {dateLabel}</h1>
+		</header>
+
+		<IssueSpread
+			issue={issueMeta}
+			tableOfContents={tableOfContents}
+			includeInThisIssueLabel={false}
+		/>
+	</div>
+</PageLayout>

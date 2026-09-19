@@ -1,5 +1,6 @@
 /*
- * Styling for src/pages/index.astro.
+ * Styling for src/pages/index.astro. The cover/toc layout itself lives in
+ * issue-spread.css, shared with the per-issue archive page.
  */
 
 .site-main {
@@ -9,118 +10,6 @@
 }
 .issue-block {
 	padding: 1.25rem 0;
-}
-
-/* Two-column hero: cover | toc */
-.issue-content {
-	display: grid;
-	grid-template-columns: 1fr;
-	gap: 1.5rem;
-	font-size: 1rem;
-}
-
-@media (min-width: 1024px) {
-	/* two equal columns, top-aligned so the cover keeps its own fixed size
-	   rather than stretching to match the TOC column's height */
-	.issue-content {
-		grid-template-columns: 1fr 1fr;
-		gap: 1.5rem;
-		align-items: start;
-	}
-}
-
-/* The link wrapping the cover is a thumbnail, not inline text — an
-   underline drawn by the <a> would otherwise paint through the
-   placeholder's text content regardless of that element's own
-   text-decoration, since it's the ancestor <a> doing the drawing. */
-.issue-cover a {
-	text-decoration: none;
-}
-
-/* The frame sizes and centers once — capped by viewport height (mobile more
-   tightly, since it's stacked below the nav rather than sharing a row with
-   the TOC) so the cover can't blow past a single page's height — and both
-   the cover box and its caption size to 100% of the frame, so they always
-   share the same edges no matter what the cap works out to. */
-.issue-cover-frame {
-	width: min(100%, 55dvh * 1190 / 1546);
-	margin: 0 auto;
-}
-@media (min-width: 1024px) {
-	.issue-cover-frame {
-		width: min(100%, 75dvh * 1190 / 1546);
-	}
-}
-
-/* The cover image always keeps the standard cover's dimensions (1190x1546px).
-   The placeholder's own sizing lives in issue-cover.css, shared with the
-   issues index page. */
-.issue-cover img {
-	width: 100%;
-	aspect-ratio: 1190 / 1546;
-	height: auto;
-	display: block;
-	object-fit: cover;
-}
-
-/* TOC: allow multiple titles per category (no lines between titles) */
-.issue-toc {
-	font-size: 1.2rem;
-	display: flex;
-	flex-direction: column;
-	line-height: 1.3;
-}
-.issue-toc h2 {
-	margin: 0.5rem 0 1.5rem;
-	font-size: 1.25rem;
-}
-.issue-toc ul {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-	display: flex;
-	flex-direction: column;
-	gap: 1.5rem;
-}
-.issue-toc li {
-	padding: 0.25rem 0;
-}
-
-.toc-category {
-	display: block;
-	font-size: 1rem;
-	color: var(--color-subtle);
-	margin-bottom: 0.25rem;
-}
-
-@media (min-width: 1024px) {
-	.toc-category {
-		font-size: 1.25rem;
-	}
-}
-
-.toc-title {
-	font-size: 1.3rem;
-	display: block;
-	font-weight: 700;
-	font-family: var(--font-sans);
-	padding: 0.88rem 0.25rem 0.35rem 0;
-	margin-bottom: 0.5rem;
-	border-bottom: 1px solid #000;
-	text-decoration: none;
-}
-.issue-toc a.toc-title:hover {
-	font-style: italic;
-}
-.toc-subtitle {
-	display: inline-block;
-	font-size: 0.8em;
-	font-weight: 500;
-	line-height: 1.2;
-	font-style: italic;
-}
-.issue-toc li:last-child .toc-title:last-child {
-	border-bottom: none;
 }
 
 /* "about stacks" / "submit" boxes: centered and wider on desktop */
@@ -147,13 +36,4 @@
 		font-size: 1.25rem;
 		border-bottom: 1px solid var(--color-border);
 	}
-}
-
-/* Issue cover figcaption. The old site's markup had this at font-size:small
-   via an inline style, which always wins over its class — so that's the
-   real (non-responsive) size actually shown, not the class's own rule. */
-.figcaption-issue-cover {
-	font-size: small;
-	color: var(--color-subtle);
-	margin-top: 0.35rem;
 }

@@ -1,0 +1,225 @@
+/*
+ * Styling for src/components/IssueSpread.astro: the cover-left / table-of-
+ * contents-right layout shared by the homepage and the per-issue archive
+ * page (src/pages/issues/[issue].astro).
+ */
+
+/* Two-column hero: cover | toc */
+.issue-content {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 1.5rem;
+	font-size: 1rem;
+}
+
+@media (min-width: 1024px) {
+	/* two equal columns, top-aligned so the cover keeps its own fixed size
+	   rather than stretching to match the TOC column's height */
+	.issue-content {
+		grid-template-columns: 1fr 1fr;
+		gap: 1.5rem;
+		align-items: start;
+	}
+}
+
+/* The link/button wrapping the cover is a thumbnail, not inline text — an
+   underline drawn by the <a> would otherwise paint through the
+   placeholder's text content regardless of that element's own
+   text-decoration, since it's the ancestor doing the drawing. */
+.issue-cover a {
+	text-decoration: none;
+}
+.issue-cover-trigger {
+	display: block;
+	width: 100%;
+	border: none;
+	background: none;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
+	font: inherit;
+	text-align: inherit;
+}
+
+/* The frame sizes and centers once — capped by viewport height (mobile more
+   tightly, since it's stacked below the nav rather than sharing a row with
+   the TOC) so the cover can't blow past a single page's height — and both
+   the cover box and its caption size to 100% of the frame, so they always
+   share the same edges no matter what the cap works out to. */
+.issue-cover-frame {
+	width: min(100%, 55dvh * 1190 / 1546);
+	margin: 0 auto;
+}
+@media (min-width: 1024px) {
+	.issue-cover-frame {
+		width: min(100%, 75dvh * 1190 / 1546);
+	}
+}
+
+/* The cover image always keeps the standard cover's dimensions (1190x1546px).
+   The placeholder's own sizing lives in issue-cover.css. */
+.issue-cover img {
+	width: 100%;
+	aspect-ratio: 1190 / 1546;
+	height: auto;
+	display: block;
+	object-fit: cover;
+}
+
+/* Hover/focus overlay shown on the cover when the issue has a PDF to open */
+.issue-cover-trigger {
+	position: relative;
+}
+.issue-cover-pdf-hint {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1rem;
+	text-align: center;
+	background: rgba(0, 0, 0, 0.55);
+	color: #fff;
+	font-family: var(--font-sans);
+	font-size: 1rem;
+	opacity: 0;
+	transition: opacity 0.15s ease;
+}
+.issue-cover-trigger:hover .issue-cover-pdf-hint,
+.issue-cover-trigger:focus-visible .issue-cover-pdf-hint {
+	opacity: 1;
+}
+
+/* Issue cover figcaption. The old site's markup had this at font-size:small
+   via an inline style, which always wins over its class — so that's the
+   real (non-responsive) size actually shown, not the class's own rule. */
+.figcaption-issue-cover {
+	font-size: small;
+	color: var(--color-subtle);
+	margin-top: 0.35rem;
+}
+
+/* PDF popup modal, opened by clicking a cover with .issue-cover-trigger.
+   The [hidden] rule must win over the plain-class rule below (an author
+   stylesheet rule otherwise beats the browser's default `[hidden]{display:
+   none}`, regardless of the hidden attribute actually being set), or the
+   modal stays visible even when JS marks it hidden. */
+.pdf-modal-backdrop[hidden] {
+	display: none;
+}
+/* Covers the viewport below the sticky nav (--header-height), and centers
+   the floating frame within that area — not the full viewport — so the
+   frame's margins land relative to the nav's bottom edge, not the browser's
+   top edge. The popup is only ever opened at >=1024px; narrower viewports
+   open the PDF in a new tab instead (see the click handler below), so
+   there's no mobile header height to account for here. */
+.pdf-modal-backdrop {
+	position: fixed;
+	top: var(--header-height, 96px);
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(0, 0, 0, 0.55);
+}
+.pdf-modal-frame {
+	position: relative;
+	width: min(1200px, 92%);
+	height: min(1000px, 88%);
+	background: #000;
+	border-radius: 6px;
+	box-shadow: 0 22px 55px rgba(0, 0, 0, 0.6);
+	overflow: hidden;
+}
+.pdf-modal-iframe {
+	width: 100%;
+	height: 100%;
+	border: none;
+	background: #fff;
+	display: block;
+}
+.pdf-modal-close {
+	position: absolute;
+	top: 0.7rem;
+	right: 0.7rem;
+	z-index: 1;
+	width: 42px;
+	height: 42px;
+	border: none;
+	border-radius: 999px;
+	background: rgba(0, 0, 0, 0.6);
+	color: #fff;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.4rem;
+	line-height: 1;
+}
+.pdf-modal-close:hover,
+.pdf-modal-close:focus-visible {
+	background: rgba(0, 0, 0, 0.8);
+}
+
+/* TOC: allow multiple titles per category (no lines between titles) */
+.issue-toc {
+	font-size: 1.2rem;
+	display: flex;
+	flex-direction: column;
+	line-height: 1.3;
+}
+.issue-toc h2 {
+	margin: 0.5rem 0 1.5rem;
+	font-size: 1.25rem;
+}
+.issue-toc ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+.issue-toc li {
+	padding: 0.25rem 0;
+}
+
+.toc-category {
+	display: block;
+	font-size: 1rem;
+	color: var(--color-subtle);
+	margin-bottom: 0.25rem;
+}
+
+@media (min-width: 1024px) {
+	.toc-category {
+		font-size: 1.25rem;
+	}
+}
+
+.toc-title {
+	font-size: 1.3rem;
+	display: block;
+	font-weight: 700;
+	font-family: var(--font-sans);
+	padding: 0.88rem 0.25rem 0.35rem 0;
+	margin-bottom: 0.5rem;
+	border-bottom: 1px solid #000;
+	text-decoration: none;
+}
+.issue-toc a.toc-title:hover {
+	font-style: italic;
+}
+.toc-subtitle {
+	display: inline-block;
+	font-size: 0.8em;
+	font-weight: 500;
+	line-height: 1.2;
+	font-style: italic;
+}
+.issue-toc li:last-child .toc-title:last-child {
+	border-bottom: none;
+}

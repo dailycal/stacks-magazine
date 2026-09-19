@@ -4,10 +4,6 @@
 // and the topbar renders the most recent entry's `issue` label (see
 // src/layouts/PageLayout.astro). "Most recent" is decided by `date`, not array
 // order, but keep this list newest-first for readability.
-//
-// The most recent entry's `date` must match the newest issue folder under
-// src/content (issue-<date>); the homepage build throws if it doesn't, so a new
-// content folder can't ship without its issues.ts entry.
 
 import { withBase } from "../lib/path";
 

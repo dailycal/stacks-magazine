@@ -18,17 +18,20 @@ const pastEvents = upcomingEvents.slice(currentMonthEvents.length);
   description="Upcoming events around Berkeley and the Bay Area."
 >
   <div class="site-main">
+    {/* Header */}
     <header class="section-header">
       <h1>Upcoming Events</h1>
     </header>
 
     <div class="events-container">
+      {/* Intro text */}
       <p class="intro-text">
         This list will be updated continuously. Email <a
           href="mailto:stacksmag@dailycal.org">stacksmag@dailycal.org</a
         > with events to add to our calendar!
       </p>
 
+      {/* Current month's dated events */}
       {
         currentMonthEvents.length > 0 && (
           <>
@@ -47,6 +50,7 @@ const pastEvents = upcomingEvents.slice(currentMonthEvents.length);
         )
       }
 
+      {/* Older dated events */}
       {
         pastEvents.length > 0 && (
           <>
@@ -65,6 +69,7 @@ const pastEvents = upcomingEvents.slice(currentMonthEvents.length);
         )
       }
 
+      {/* Recurring weekly events */}
       <h2 class="events-month-title">Weekly events around town</h2>
       <ul class="events-list">
         {

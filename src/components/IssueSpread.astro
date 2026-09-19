@@ -1,0 +1,155 @@
+---
+import type { Issue } from "../config/issues";
+import { formatIssueDate, type TocGroup } from "../lib/issues";
+import IssueCoverArt from "./IssueCoverArt.astro";
+
+interface Props {
+	issue: Issue;
+	tableOfContents: TocGroup[];
+	// Where the cover links when the issue has no PDF to open.
+	coverHref?: string;
+	// Whether to show the "In This Issue" label above the article list.
+	includeInThisIssueLabel?: boolean;
+}
+
+const {
+	issue,
+	tableOfContents,
+	coverHref,
+	includeInThisIssueLabel = true,
+} = Astro.props;
+const dateLabel = formatIssueDate(issue.date);
+const hasPdf = Boolean(issue.pdf);
+---
+
+<div class="issue-content">
+	<div class="issue-cover">
+		<div class="issue-cover-frame">
+			{
+				hasPdf ? (
+					<button type="button" class="issue-cover-trigger" data-pdf={issue.pdf}>
+						<IssueCoverArt issue={issue} dateLabel={dateLabel} />
+						<span class="issue-cover-pdf-hint" aria-hidden="true">
+							Click to Open PDF
+						</span>
+					</button>
+				) : coverHref ? (
+					<a href={coverHref}>
+						<IssueCoverArt issue={issue} dateLabel={dateLabel} />
+					</a>
+				) : (
+					<IssueCoverArt issue={issue} dateLabel={dateLabel} />
+				)
+			}
+			{
+				issue.coverAuthor && (
+					<figcaption class="figcaption-issue-cover">
+						Cover by {issue.coverAuthor}
+					</figcaption>
+				)
+			}
+		</div>
+	</div>
+
+	<div class="issue-toc">
+		{includeInThisIssueLabel && <h2>In This Issue</h2>}
+		<ul>
+			{
+				tableOfContents.map((group) => (
+					<li class="toc-group">
+						<span class="toc-category">{group.category}</span>
+						{group.articles.map((article) => (
+							<a class="toc-title" href={article.href}>
+								{article.title}
+								{article.subheadline && (
+									<>
+										<br />
+										<span class="toc-subtitle">{article.subheadline}</span>
+									</>
+								)}
+							</a>
+						))}
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</div>
+
+{
+	hasPdf && (
+		<div class="pdf-modal-backdrop" data-pdf-modal-backdrop hidden>
+			<div class="pdf-modal-frame" role="dialog" aria-modal="true" aria-label="Issue PDF">
+				<button type="button" class="pdf-modal-close" data-pdf-modal-close aria-label="Close PDF">
+					&times;
+				</button>
+				<iframe class="pdf-modal-iframe" data-pdf-modal-iframe title="Issue PDF" loading="lazy" />
+			</div>
+		</div>
+	)
+}
+
+<script>
+	function initPdfModal(root: ParentNode) {
+		const backdrop = root.querySelector<HTMLElement>("[data-pdf-modal-backdrop]");
+		const iframe = root.querySelector<HTMLIFrameElement>("[data-pdf-modal-iframe]");
+		const closeButton = root.querySelector<HTMLElement>("[data-pdf-modal-close]");
+		const triggers = root.querySelectorAll<HTMLButtonElement>(".issue-cover-trigger");
+		if (!backdrop || !iframe || triggers.length === 0) return;
+
+		// Re-parent to <body> so the backdrop is a top-level sibling of the nav
+		document.body.appendChild(backdrop);
+
+		// Matches the site's own mobile/desktop breakpoint (see .desktop-only /
+		// .mobile-only in page-layout.css). The popup relies on the desktop
+		// sticky nav's height to size itself, so on narrower viewports the PDF
+		// just opens in a new tab instead.
+		const isMobile = () => window.matchMedia("(max-width: 1023px)").matches;
+
+    // Get the current bottom edge of the sticky nav so the backdrop's position
+    // lines up exactly with it.
+		function positionBackdrop() {
+			const header = document.querySelector<HTMLElement>(".site-header");
+			const top = header ? Math.round(header.getBoundingClientRect().bottom) : 0;
+			backdrop!.style.top = `${Math.max(top, 0)}px`;
+		}
+
+		function open(pdfUrl: string) {
+			positionBackdrop();
+			iframe!.src = pdfUrl;
+			backdrop!.hidden = false;
+			document.body.style.overflow = "hidden";
+		}
+
+		function close() {
+			backdrop!.hidden = true;
+			iframe!.src = "";
+			document.body.style.overflow = "";
+		}
+
+		triggers.forEach((trigger) => {
+			trigger.addEventListener("click", () => {
+				const pdf = trigger.dataset.pdf;
+				if (!pdf) return;
+				if (isMobile()) {
+					window.open(pdf, "_blank", "noopener");
+				} else {
+					open(pdf);
+				}
+			});
+		});
+
+		closeButton?.addEventListener("click", close);
+		backdrop.addEventListener("click", (event) => {
+			if (event.target === backdrop) close();
+		});
+		document.addEventListener("keydown", (event) => {
+			if (event.key === "Escape" && !backdrop!.hidden) close();
+		});
+		window.addEventListener("resize", () => {
+			if (!backdrop!.hidden) positionBackdrop();
+		});
+	}
+
+	initPdfModal(document);
+</script>

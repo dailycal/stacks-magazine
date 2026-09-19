@@ -10,9 +10,7 @@ export interface UpcomingEvent {
 	link: string;
 }
 
-// One-off dated events, most recent first — add new events to the top of
-// this list so the page's "current month" section stays correct without
-// needing to reorder anything.
+// One-off dated events, most recent first
 export const upcomingEvents: UpcomingEvent[] = [
 	{
 		date: "May 29",
@@ -131,8 +129,8 @@ export const upcomingEvents: UpcomingEvent[] = [
 	},
 ];
 
-// Recurring weekly events with no specific calendar date — shown in their
-// own section below the dated events, in the same order as the old site.
+// Recurring weekly events with no specific calendar date, shown in their
+// own section below the dated events.
 export const weeklyEvents: UpcomingEvent[] = [
 	{
 		date: "Monday",

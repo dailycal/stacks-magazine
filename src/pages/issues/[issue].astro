@@ -32,11 +32,13 @@ const dateLabel = formatIssueDate(issueMeta.date);
 	description={`Articles from ${issueMeta.issue}, ${dateLabel}.`}
 >
 	<div class="site-main">
+		{/* Header */}
 		<header class="issue-page-header">
 			<p class="issue-page-eyebrow">Issue Archive</p>
 			<h1 class="issue-page-title">{issueMeta.issue} &bull; {dateLabel}</h1>
 		</header>
 
+		{/* Cover art and table of contents */}
 		<IssueSpread
 			issue={issueMeta}
 			tableOfContents={tableOfContents}

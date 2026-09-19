@@ -29,6 +29,7 @@ interface Props {
   modifiedTime?: Date;
   authors?: string[];
   noindex?: boolean;
+  includeSeo?: boolean;
 }
 
 const {
@@ -42,6 +43,7 @@ const {
   modifiedTime,
   authors,
   noindex,
+  includeSeo = true,
 } = Astro.props;
 
 // Navigation link interface
@@ -80,23 +82,24 @@ const navLinksRight: NavLink[] = [
   <meta name="generator" content={Astro.generator} />
   <link rel="icon" type="image/png" href={withBase("/favicon.png")} />
   <link rel="icon" href={withBase("/favicon.ico")} />
-  <SEO
-    title={title}
-    headline={headline}
-    description={description}
-    image={image}
-    imageAlt={imageAlt}
-    type={seoType}
-    publishedTime={publishedTime}
-    modifiedTime={modifiedTime}
-    authors={authors}
-    noindex={noindex}
-  />
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700&display=swap"
-  />
-
+  {
+    includeSeo ? (
+      <SEO
+        title={title}
+        headline={headline}
+        description={description}
+        image={image}
+        imageAlt={imageAlt}
+        type={seoType}
+        publishedTime={publishedTime}
+        modifiedTime={modifiedTime}
+        authors={authors}
+        noindex={noindex}
+      />
+    ) : (
+      <title>{title}</title>
+    )
+  }
   <body>
     {/* Desktop header */}
     <header

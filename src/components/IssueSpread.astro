@@ -1,4 +1,7 @@
 ---
+/**
+ * Full spread of an issue with cover art and a table of contents.
+ */
 import type { Issue } from "../config/issues";
 import { formatIssueDate, type TocGroup } from "../lib/issues";
 import IssueCoverArt from "./IssueCoverArt.astro";
@@ -23,8 +26,10 @@ const hasPdf = Boolean(issue.pdf);
 ---
 
 <div class="issue-content">
+	{/* Cover art */}
 	<div class="issue-cover">
 		<div class="issue-cover-frame">
+			{/* Cover links to a PDF trigger, a fallback href, or nothing */}
 			{
 				hasPdf ? (
 					<button type="button" class="issue-cover-trigger" data-pdf={issue.pdf}>
@@ -41,6 +46,7 @@ const hasPdf = Boolean(issue.pdf);
 					<IssueCoverArt issue={issue} dateLabel={dateLabel} />
 				)
 			}
+			{/* Cover artist credit */}
 			{
 				issue.coverAuthor && (
 					<figcaption class="figcaption-issue-cover">
@@ -51,6 +57,7 @@ const hasPdf = Boolean(issue.pdf);
 		</div>
 	</div>
 
+	{/* Table of contents */}
 	<div class="issue-toc">
 		{includeInThisIssueLabel && <h2>In This Issue</h2>}
 		<ul>
@@ -76,6 +83,7 @@ const hasPdf = Boolean(issue.pdf);
 	</div>
 </div>
 
+{/* PDF modal, opened by clicking the cover when the issue has a PDF */}
 {
 	hasPdf && (
 		<div class="pdf-modal-backdrop" data-pdf-modal-backdrop hidden>
@@ -100,10 +108,6 @@ const hasPdf = Boolean(issue.pdf);
 		// Re-parent to <body> so the backdrop is a top-level sibling of the nav
 		document.body.appendChild(backdrop);
 
-		// Matches the site's own mobile/desktop breakpoint (see .desktop-only /
-		// .mobile-only in page-layout.css). The popup relies on the desktop
-		// sticky nav's height to size itself, so on narrower viewports the PDF
-		// just opens in a new tab instead.
 		const isMobile = () => window.matchMedia("(max-width: 1023px)").matches;
 
     // Get the current bottom edge of the sticky nav so the backdrop's position

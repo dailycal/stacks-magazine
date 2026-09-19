@@ -22,6 +22,7 @@ export const about: {
 	creative: MastheadSection;
 	credits: MastheadSection;
 } = {
+  // Staff section
 	staff: {
 		entries: [
 			{ role: "Editor-in-Chief", people: [{ name: "Ananya Rupanagunta" }] },
@@ -29,6 +30,7 @@ export const about: {
 			{ role: "Creative Director", people: [{ name: "Sally King" }] },
 		],
 	},
+  // Editors section
 	editors: {
 		heading: "Editors",
 		entries: [
@@ -56,6 +58,7 @@ export const about: {
 			},
 		],
 	},
+	// Creative section
 	creative: {
 		heading: "Creative",
 		entries: [
@@ -63,6 +66,7 @@ export const about: {
 			{ role: "Photo editor", people: [{ name: "Ahana Sur" }] },
 		],
 	},
+  // Credits section
 	credits: {
 		heading: "Credits",
 		entries: [

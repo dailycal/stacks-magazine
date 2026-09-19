@@ -1,6 +1,7 @@
 // The magazine's sections. Source of truth for the section nav, the section
 // index/landing pages, and the `section` enum that article frontmatter is
 // validated against (see src/content.config.ts).
+
 export const sections = [
 	{
 		name: "Headlines",

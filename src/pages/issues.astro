@@ -1,43 +1,68 @@
 ---
 import PageLayout from "../layouts/PageLayout.astro";
 import IssueCoverArt from "../components/IssueCoverArt.astro";
+import IssueSpread from "../components/IssueSpread.astro";
 import "../styles/issue-cover.css";
+import "../styles/issue-spread.css";
 import "../styles/issues-index.css";
 import { issues } from "../config/issues";
-import { formatIssueDate, issueSlugToDate } from "../lib/issues";
+import {
+	buildTableOfContents,
+	formatIssueDate,
+	getAllArticles,
+	getMostRecentIssueMeta,
+	issueSlugToDate,
+} from "../lib/issues";
 import { withBase } from "../lib/path";
 
-// Newest first, regardless of issues.ts array order.
-const sortedIssues = [...issues].sort(
-	(a, b) => issueSlugToDate(b.date).getTime() - issueSlugToDate(a.date).getTime(),
-);
+// The latest issue gets a full spread above the grid, so the grid only lists
+// the ones before it, newest first (regardless of issues.ts array order).
+const latestIssue = getMostRecentIssueMeta();
+const allArticles = await getAllArticles();
+const latestTableOfContents = buildTableOfContents(latestIssue.date, allArticles);
+const pastIssues = issues
+	.filter((issue) => issue !== latestIssue)
+	.sort((a, b) => issueSlugToDate(b.date).getTime() - issueSlugToDate(a.date).getTime());
 ---
 
 <PageLayout title="Issues - Stacks Magazine" description="Every issue of Stacks Magazine.">
 	<div class="site-main">
+		{/* Header */}
 		<header class="issues-header">
-			<h1>Issues</h1>
+			<h1>Latest Issue</h1>
 		</header>
 
-		<div class="issues-grid">
-			{
-				sortedIssues.map((issue) => {
-					const dateLabel = formatIssueDate(issue.date);
-					return (
-						<a class="issue-card" href={withBase(`/issues/${issue.date}`)}>
-							<div class="issue-card-cover">
-								<IssueCoverArt issue={issue} dateLabel={dateLabel} />
-							</div>
-							<p class="issue-card-caption">
-								{issue.coverAuthor ? `Cover by ${issue.coverAuthor}` : '\u00A0'}
-							</p>
-							<p class="issue-card-title">
-								{issue.issue} &bull; {dateLabel}
-							</p>
-						</a>
-					);
-				})
-			}
-		</div>
+		{/* Latest issue spread */}
+		<IssueSpread
+			issue={latestIssue}
+			tableOfContents={latestTableOfContents}
+		/>
+
+		{/* Earlier issues */}
+		{
+			pastIssues.length > 0 && (
+				<section class="past-issues">
+					<h2 class="past-issues-heading">Past Issues</h2>
+					<div class="issues-grid">
+						{pastIssues.map((issue) => {
+							const dateLabel = formatIssueDate(issue.date);
+							return (
+								<a class="issue-card" href={withBase(`/issues/${issue.date}`)}>
+									<div class="issue-card-cover">
+										<IssueCoverArt issue={issue} dateLabel={dateLabel} />
+									</div>
+									<p class="issue-card-caption">
+										{issue.coverAuthor ? `Cover by ${issue.coverAuthor}` : ' '}
+									</p>
+									<p class="issue-card-title">
+										{issue.issue} &bull; {dateLabel}
+									</p>
+								</a>
+							);
+						})}
+					</div>
+				</section>
+			)
+		}
 	</div>
 </PageLayout>

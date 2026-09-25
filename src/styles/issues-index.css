@@ -20,6 +20,18 @@
 	margin: 0;
 }
 
+/* Small heading separating the latest-issue spread from the grid below it. */
+.past-issues {
+	margin-top: 3rem;
+}
+.past-issues-heading {
+	font-family: var(--font-sans);
+	font-size: 1.25rem;
+	margin: 0 0 1.5rem;
+	padding-bottom: 0.5rem;
+	border-bottom: 1px solid var(--color-border);
+}
+
 /* Max 3 per row, wrapping to fewer columns as the viewport narrows. */
 .issues-grid {
 	display: grid;

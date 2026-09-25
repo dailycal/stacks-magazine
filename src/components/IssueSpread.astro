@@ -11,15 +11,18 @@ interface Props {
 	tableOfContents: TocGroup[];
 	// Where the cover links when the issue has no PDF to open.
 	coverHref?: string;
-	// Whether to show the "In This Issue" label above the article list.
-	includeInThisIssueLabel?: boolean;
+	// Optional headings above the cover and above the article list; omitted
+	// when blank.
+	coverHeading?: string;
+	listHeading?: string;
 }
 
 const {
 	issue,
 	tableOfContents,
 	coverHref,
-	includeInThisIssueLabel = true,
+	coverHeading,
+	listHeading,
 } = Astro.props;
 const dateLabel = formatIssueDate(issue.date);
 const hasPdf = Boolean(issue.pdf);
@@ -29,6 +32,9 @@ const hasPdf = Boolean(issue.pdf);
 	{/* Cover art */}
 	<div class="issue-cover">
 		<div class="issue-cover-frame">
+			{/* Cover heading */}
+			{coverHeading && <h2>{coverHeading}</h2>}
+
 			{/* Cover links to a PDF trigger, a fallback href, or nothing */}
 			{
 				hasPdf ? (
@@ -59,7 +65,7 @@ const hasPdf = Boolean(issue.pdf);
 
 	{/* Table of contents */}
 	<div class="issue-toc">
-		{includeInThisIssueLabel && <h2>In This Issue</h2>}
+		{listHeading && <h2>{listHeading}</h2>}
 		<ul>
 			{
 				tableOfContents.map((group) => (

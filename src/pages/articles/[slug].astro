@@ -1,0 +1,20 @@
+---
+import ArticlePage from "../../components/ArticlePage.astro";
+import { getAllArticles } from "../../lib/issues";
+
+/**
+ * Gets the static paths for every article that isn't part of an issue.
+ * Used for static site generation.
+ * @returns An array of objects containing the slug parameter for each article.
+ */
+export async function getStaticPaths() {
+  const articles = await getAllArticles();
+  return articles.flatMap(({ issue, slug, entry }) =>
+    issue ? [] : [{ params: { slug }, props: { entry } }],
+  );
+}
+
+const { entry } = Astro.props;
+---
+
+<ArticlePage entry={entry} />

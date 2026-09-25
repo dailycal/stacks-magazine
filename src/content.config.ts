@@ -19,7 +19,7 @@ const articles = defineCollection({
 			authors: z.array(z.string()),
 			publishDate: z.coerce.date(),
 			section: z.enum(sectionNames),
-			issue: z.string(),
+			issue: z.string().optional(),
 			staffAttribution: z.boolean().default(false),
 			featuredImage: z.union([image(), z.url()]).optional(),
 			featuredImageAlt: z.string().optional(),

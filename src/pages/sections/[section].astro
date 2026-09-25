@@ -3,8 +3,7 @@ import PageLayout from "../../layouts/PageLayout.astro";
 import SmartImage from "../../components/SmartImage.astro";
 import "../../styles/section-page.css";
 import { sections } from "../../config/sections";
-import { getAllArticles } from "../../lib/issues";
-import { withBase } from "../../lib/path";
+import { articleHref, getAllArticles } from "../../lib/issues";
 
 /**
  * Gets the static paths for all sections.
@@ -45,27 +44,27 @@ const sectionArticles = allArticles
     {
       sectionArticles.length > 0 ? (
         <div class="article-list">
-          {sectionArticles.map(({ issue, slug, entry }) => (
-            <a class="article-card" href={withBase(`/issues/${issue}/${slug}`)}>
+          {sectionArticles.map((article) => (
+            <a class="article-card" href={articleHref(article)}>
               {/* Headline */}
               <div class="article-card-text">
-                <h3 class="article-card-title">{entry.data.title}</h3>
-                {entry.data.subheadline && (
+                <h3 class="article-card-title">{article.entry.data.title}</h3>
+                {article.entry.data.subheadline && (
                   <h3 class="article-card-sub-title">
-                    {entry.data.subheadline}
+                    {article.entry.data.subheadline}
                   </h3>
                 )}
-                {entry.data.excerpt && (
-                  <p class="article-card-excerpt">{entry.data.excerpt}</p>
+                {article.entry.data.excerpt && (
+                  <p class="article-card-excerpt">{article.entry.data.excerpt}</p>
                 )}
               </div>
 
               {/* Featured image */}
-              {entry.data.featuredImage && (
+              {article.entry.data.featuredImage && (
                 <div class="article-card-image">
                   <SmartImage
-                    src={entry.data.featuredImage}
-                    alt={entry.data.featuredImageAlt ?? ""}
+                    src={article.entry.data.featuredImage}
+                    alt={article.entry.data.featuredImageAlt ?? ""}
                   />
                 </div>
               )}

@@ -1,6 +1,7 @@
 import type { ImageMetadata } from "astro";
 import { getCollection, type CollectionEntry } from "astro:content";
 import { issues, type Issue } from "../config/issues";
+import { sections } from "../config/sections";
 import { withBase } from "./path";
 
 // Valid months
@@ -67,6 +68,18 @@ export async function getAllArticles(): Promise<ArticleWithSlugs[]> {
   });
 }
 
+function newestFirst(a: ArticleWithSlugs, b: ArticleWithSlugs): number {
+  return b.entry.data.publishDate.getTime() - a.entry.data.publishDate.getTime();
+}
+
+function toTocArticle(article: ArticleWithSlugs): TocArticle {
+  return {
+    href: withBase(`/issues/${article.issue}/${article.slug}`),
+    title: article.entry.data.title,
+    subheadline: article.entry.data.subheadline,
+  };
+}
+
 /**
  * Groups one issue's articles by section for a table-of-contents listing:
  * newest first within each section, sections ordered by article count (most
@@ -88,9 +101,7 @@ export function buildTableOfContents(issue: string, articles: ArticleWithSlugs[]
   }
 
   for (const group of bySection.values()) {
-    group.sort(
-      (a, b) => b.entry.data.publishDate.getTime() - a.entry.data.publishDate.getTime(),
-    );
+    group.sort(newestFirst);
   }
 
   return Array.from(bySection.entries())
@@ -100,12 +111,33 @@ export function buildTableOfContents(issue: string, articles: ArticleWithSlugs[]
     })
     .map(([category, group]) => ({
       category,
-      articles: group.map((article) => ({
-        href: withBase(`/issues/${article.issue}/${article.slug}`),
-        title: article.entry.data.title,
-        subheadline: article.entry.data.subheadline,
-      })),
+      articles: group.map(toTocArticle),
     }));
+}
+
+// How many of a section's newest articles the homepage lists.
+const HOMEPAGE_ARTICLES_PER_SECTION = 3;
+
+/**
+ * The homepage's table of contents: every section that has articles and a
+ * non-negative `homepageOrder` (see src/config/sections.ts), in that order,
+ * each listing its newest articles across all issues.
+ * @param articles Every article across all issues (e.g. from getAllArticles()).
+ * @returns The homepage's articles grouped into TOC sections.
+ */
+export function buildHomepageTableOfContents(articles: ArticleWithSlugs[]): TocGroup[] {
+  return sections
+    .filter((section) => section.homepageOrder >= 0)
+    .sort((a, b) => a.homepageOrder - b.homepageOrder)
+    .map((section) => ({
+      category: section.name,
+      articles: articles
+        .filter((article) => article.entry.data.section === section.name)
+        .sort(newestFirst)
+        .slice(0, HOMEPAGE_ARTICLES_PER_SECTION)
+        .map(toTocArticle),
+    }))
+    .filter((group) => group.articles.length > 0);
 }
 
 /**

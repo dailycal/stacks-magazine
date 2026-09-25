@@ -4,7 +4,7 @@ import IssueSpread from "../components/IssueSpread.astro";
 import "../styles/issue-cover.css";
 import "../styles/issue-spread.css";
 import "../styles/index-page.css";
-import { getAllArticles, getCurrentIssue, buildTableOfContents } from "../lib/issues";
+import { getAllArticles, getCurrentIssue, buildHomepageTableOfContents } from "../lib/issues";
 import { withBase } from "../lib/path";
 
 // Get the most recent issue and all articles in that issue
@@ -15,7 +15,7 @@ const currentIssueMeta = getCurrentIssue(
   allArticles.map((article) => article.issue),
 );
 const currentIssue = currentIssueMeta.date;
-const tableOfContents = buildTableOfContents(currentIssue, allArticles);
+const tableOfContents = buildHomepageTableOfContents(allArticles);
 ---
 
 <PageLayout title="Stacks Magazine">
@@ -25,6 +25,8 @@ const tableOfContents = buildTableOfContents(currentIssue, allArticles);
         issue={currentIssueMeta}
         tableOfContents={tableOfContents}
         coverHref={withBase(`/issues/${currentIssue}`)}
+        coverHeading="Latest Issue"
+        listHeading="Latest"
       />
 
       {/* About statement */}

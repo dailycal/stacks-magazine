@@ -12,7 +12,7 @@ const allArticles = await getAllArticles();
 // The current issue's metadata. Throws if the newest src/config/issues.ts entry
 // doesn't match the newest issue folder in src/content.
 const currentIssueMeta = getCurrentIssue(
-  allArticles.map((article) => article.issue),
+  allArticles.flatMap((article) => article.issue ?? []),
 );
 const currentIssue = currentIssueMeta.date;
 const tableOfContents = buildHomepageTableOfContents(allArticles);

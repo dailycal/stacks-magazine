@@ -1,0 +1,119 @@
+---
+/**
+ * A full article page. Shared by the /issues/<issue>/<slug> and
+ * /articles/<slug> routes, which differ only in their URLs.
+ */
+import { render, type CollectionEntry } from "astro:content";
+import PageLayout from "../layouts/PageLayout.astro";
+import ArticleImage from "./ArticleImage.astro";
+import "../styles/article.css";
+
+interface Props {
+  entry: CollectionEntry<"articles">;
+}
+
+// Article properties
+const { entry } = Astro.props;
+const {
+  title,
+  subheadline,
+  authors,
+  publishDate,
+  section,
+  staffAttribution,
+  featuredImage,
+  featuredImageAlt,
+  featuredImageCaption,
+} = entry.data;
+const { Content } = await render(entry);
+
+/**
+ * Byline date formatter
+ * @param date The date to format
+ * @returns A string in the format "MMM. DD, YYYY"
+ */
+function formatDate(date: Date): string {
+  const month = date.toLocaleString("en-US", {
+    month: "short",
+    timeZone: "UTC",
+  });
+  const day = date.toLocaleString("en-US", { day: "2-digit", timeZone: "UTC" });
+  const year = date.toLocaleString("en-US", {
+    year: "numeric",
+    timeZone: "UTC",
+  });
+  return `${month === "May" ? month : `${month}.`} ${day}, ${year}`;
+}
+
+// Formatted author byline
+const authorsText = authors.length > 0 ? authors.join(" & ") : null;
+
+// Formatted publish date
+const isoDate = publishDate.toISOString().slice(0, 10);
+---
+
+<PageLayout
+  title={`${title} — Stacks Magazine`}
+  headline={title}
+  description={subheadline ?? title}
+  seoType="article"
+  publishedTime={publishDate}
+  authors={authors}
+  image={featuredImage}
+  imageAlt={featuredImageAlt}
+>
+  <article class="article-full">
+    {/* Header */}
+    <header class="article-header">
+      {/* Section */}
+      <div class="article-kicker">{section}</div>
+
+      {/* Headline */}
+      <h1 class="article-headline">{title}</h1>
+
+      {/* Subheadline */}
+      {subheadline && <h1 class="article-sub-headline">{subheadline}</h1>}
+
+      {/* Byline */}
+      <p class="article-byline">
+        {
+          authorsText && (
+            <>
+              By <strong>{authorsText}</strong>
+              {staffAttribution && " | Staff"} &middot;{" "}
+            </>
+          )
+        }
+        <time datetime={isoDate}>{formatDate(publishDate)}</time>
+      </p>
+
+      {/* "From the Stacks" pieces all share this fixed dek line */}
+      {
+        section === "From the Stacks" && (
+          <p class="article-byline">
+            Metaphorically dig through archived issues of the Daily Cal to get a
+            glimpse of life in Berkeley, from noteworthy headlines to everyday
+            reporting that has been otherwise lost in the stacks.
+          </p>
+        )
+      }
+
+      {/* Featured image */}
+      {
+        featuredImage && (
+          <ArticleImage
+            src={featuredImage}
+            alt={featuredImageAlt ?? ""}
+            caption={featuredImageCaption}
+            featured
+          />
+        )
+      }
+    </header>
+
+    {/* Body content, rendered from the article's .mdx */}
+    <section class="article-body">
+      <Content />
+    </section>
+  </article>
+</PageLayout>

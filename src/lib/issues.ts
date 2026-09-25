@@ -39,8 +39,13 @@ export function parseIssueDirName(dirName: string): string {
   return dirName.slice("issue-".length);
 }
 
+// Content folder for articles that aren't part of any issue. They're served
+// at /articles/<slug> instead of /issues/<issue>/<slug>.
+const NO_ISSUE_DIR = "no-issue";
+
 export interface ArticleWithSlugs {
-  issue: string;
+  // Undefined for articles in the no-issue folder.
+  issue: string | undefined;
   slug: string;
   entry: CollectionEntry<"articles">;
 }
@@ -64,8 +69,19 @@ export async function getAllArticles(): Promise<ArticleWithSlugs[]> {
   const entries = await getCollection("articles");
   return entries.map((entry) => {
     const [dirName, slug] = entry.id.split("/");
-    return { issue: parseIssueDirName(dirName), slug, entry };
+    const issue = dirName === NO_ISSUE_DIR ? undefined : parseIssueDirName(dirName);
+    return { issue, slug, entry };
   });
+}
+
+/**
+ * The site URL for an article: /issues/<issue>/<slug>, or /articles/<slug>
+ * when it isn't part of an issue.
+ * @param article An article from getAllArticles().
+ * @returns The base-prefixed article path.
+ */
+export function articleHref({ issue, slug }: Pick<ArticleWithSlugs, "issue" | "slug">): string {
+  return withBase(issue ? `/issues/${issue}/${slug}` : `/articles/${slug}`);
 }
 
 function newestFirst(a: ArticleWithSlugs, b: ArticleWithSlugs): number {
@@ -74,7 +90,7 @@ function newestFirst(a: ArticleWithSlugs, b: ArticleWithSlugs): number {
 
 function toTocArticle(article: ArticleWithSlugs): TocArticle {
   return {
-    href: withBase(`/issues/${article.issue}/${article.slug}`),
+    href: articleHref(article),
     title: article.entry.data.title,
     subheadline: article.entry.data.subheadline,
   };

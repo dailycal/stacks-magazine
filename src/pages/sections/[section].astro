@@ -1,7 +1,6 @@
 ---
-import type { ImageMetadata } from "astro";
-import { Image } from "astro:assets";
 import PageLayout from "../../layouts/PageLayout.astro";
+import SmartImage from "../../components/SmartImage.astro";
 import "../../styles/section-page.css";
 import { sections } from "../../config/sections";
 import { getAllArticles } from "../../lib/issues";
@@ -64,17 +63,10 @@ const sectionArticles = allArticles
               {/* Featured image */}
               {entry.data.featuredImage && (
                 <div class="article-card-image">
-                  {typeof entry.data.featuredImage === "string" ? (
-                    <img
-                      src={entry.data.featuredImage}
-                      alt={entry.data.featuredImageAlt ?? ""}
-                    />
-                  ) : (
-                    <Image
-                      src={entry.data.featuredImage as ImageMetadata}
-                      alt={entry.data.featuredImageAlt ?? ""}
-                    />
-                  )}
+                  <SmartImage
+                    src={entry.data.featuredImage}
+                    alt={entry.data.featuredImageAlt ?? ""}
+                  />
                 </div>
               )}
             </a>

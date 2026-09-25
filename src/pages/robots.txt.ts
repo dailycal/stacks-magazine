@@ -1,12 +1,10 @@
 import type { APIRoute } from "astro";
+import { withBase } from "../lib/path";
 
 // Generates public/robots.txt at build time so the Sitemap line always
 // matches the `site`/`base` configured in astro.config.mjs.
 export const GET: APIRoute = ({ site }) => {
-	const base = import.meta.env.BASE_URL.endsWith("/")
-		? import.meta.env.BASE_URL
-		: `${import.meta.env.BASE_URL}/`;
-	const sitemapURL = new URL(`${base}sitemap-index.xml`, site);
+	const sitemapURL = new URL(withBase("/sitemap-index.xml"), site);
 
 	const body = `User-agent: *
 Allow: /

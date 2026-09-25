@@ -1,3 +1,4 @@
+import type { ImageMetadata } from "astro";
 import { getCollection, type CollectionEntry } from "astro:content";
 import { issues, type Issue } from "../config/issues";
 import { withBase } from "./path";
@@ -126,24 +127,6 @@ export function issueSlugToDate(issue: string): Date {
 }
 
 /**
- * Picks the most recent issue at or before `asOf` (defaults to now).
- * @param issues The issue slugs to choose from.
- * @param asOf The date to compare against (defaults to the current date/time).
- * @returns The most recent qualifying issue slug.
- */
-export function getMostRecentIssue(issues: string[], asOf: Date = new Date()): string {
-  const uniqueIssues = Array.from(new Set(issues));
-  if (uniqueIssues.length === 0) {
-    throw new Error("getMostRecentIssue: no issues given.");
-  }
-  const sortedByDateDesc = uniqueIssues
-    .map((issue) => ({ issue, date: issueSlugToDate(issue) }))
-    .sort((a, b) => b.date.getTime() - a.date.getTime());
-  const mostRecentPastOrPresent = sortedByDateDesc.find(({ date }) => date.getTime() <= asOf.getTime());
-  return (mostRecentPastOrPresent ?? sortedByDateDesc[sortedByDateDesc.length - 1]).issue;
-}
-
-/**
  * Formats an issue slug (e.g. "april-2026") as a human-readable "Month Year" label.
  * @param issue The issue slug.
  * @returns The formatted label, e.g. "April 2026".
@@ -151,15 +134,6 @@ export function getMostRecentIssue(issues: string[], asOf: Date = new Date()): s
 export function formatIssueDate(issue: string): string {
   const date = issueSlugToDate(issue);
   return date.toLocaleString("en-US", { month: "long", year: "numeric" });
-}
-
-/**
- * The content directory name for an issue slug, e.g. "april-2026" -> "issue-april-2026".
- * @param issue The issue slug.
- * @returns The directory name.
- */
-export function issueDirName(issue: string): string {
-  return `issue-${issue}`;
 }
 
 /**
@@ -212,4 +186,22 @@ export function getCurrentIssue(articleIssues: string[]): Issue {
     );
   }
   return meta;
+}
+
+// Every cover image under src/assets/covers, glob-imported eagerly since
+// Vite needs a static-ish pattern to bundle these at build time.
+const coverImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/covers/*.{png,jpg,jpeg,webp}",
+  { eager: true },
+);
+
+/**
+ * Resolves an issue's cover image (its `cover` field, a src/assets-relative
+ * path) to the bundled asset. Shared by IssueCoverArt.astro (rendering the
+ * cover) and SEO.astro (the default social share image).
+ * @param issue The issue whose cover to resolve.
+ * @returns The cover's ImageMetadata, or undefined if no file matches.
+ */
+export function resolveIssueCoverImage(issue: Issue): ImageMetadata | undefined {
+  return coverImages[`/src/assets/${issue.cover}`]?.default;
 }

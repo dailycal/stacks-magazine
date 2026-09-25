@@ -2,9 +2,9 @@
 /**
  * Cover art for an issue, or a placeholder if no image available.
  */
-import type { ImageMetadata } from "astro";
 import { Image } from "astro:assets";
 import type { Issue } from "../config/issues";
+import { resolveIssueCoverImage } from "../lib/issues";
 
 interface Props {
 	issue: Issue;
@@ -13,17 +13,10 @@ interface Props {
 
 const { issue, dateLabel } = Astro.props;
 
-// The issue cover named by this entry's `cover` field.
-const coverImages = import.meta.glob<{ default: ImageMetadata }>(
-	"/src/assets/covers/*.{png,jpg,jpeg,webp}",
-	{ eager: true },
-);
-
-const coverImagePath = `/src/assets/${issue.cover}`;
-const coverImage = coverImages[coverImagePath]?.default;
+const coverImage = resolveIssueCoverImage(issue);
 
 if (!coverImage) {
-	console.warn(`[IssueCoverArt] No cover image found at ${coverImagePath}.`);
+	console.warn(`[IssueCoverArt] No cover image found at /src/assets/${issue.cover}.`);
 }
 ---
 

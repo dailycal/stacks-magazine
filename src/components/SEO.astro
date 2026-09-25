@@ -5,7 +5,7 @@
  * PageLayout's <head> so every page gets it automatically.
  */
 import type { ImageMetadata } from "astro";
-import { getMostRecentIssueMeta } from "../lib/issues";
+import { getMostRecentIssueMeta, resolveIssueCoverImage } from "../lib/issues";
 import { withBase } from "../lib/path";
 import stacksLogo from "../assets/site/stacks-logo.png";
 
@@ -51,14 +51,8 @@ const {
 const site = Astro.site!;
 const canonicalURL = new URL(Astro.url.pathname, site);
 
-// Default social image: the current issue's cover, resolved the same way
-// IssueCoverArt does (glob import, since `cover` is a src/assets-relative path).
-const coverImages = import.meta.glob<{ default: ImageMetadata }>(
-  "/src/assets/covers/*.{png,jpg,jpeg,webp}",
-  { eager: true },
-);
-const defaultCoverImage =
-  coverImages[`/src/assets/${getMostRecentIssueMeta().cover}`]?.default;
+// Default social image: the current issue's cover.
+const defaultCoverImage = resolveIssueCoverImage(getMostRecentIssueMeta());
 
 function toAbsoluteImage(source: ImageMetadata | string) {
   if (typeof source === "string") {

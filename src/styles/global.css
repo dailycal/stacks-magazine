@@ -45,11 +45,9 @@
 	--mobile-menu-bg: rgba(25, 25, 30, 0.6);
 }
 
-html,
 body {
-	height: 100%;
-}
-body {
+	min-height: 100vh;
+	min-height: 100dvh;
 	margin: 0;
 	color: var(--color-text);
 	background: var(--color-bg);

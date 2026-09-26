@@ -61,14 +61,14 @@ const navLinksLeft: NavLink[] = [
     label: "Essays",
     gif: essaysGif.src,
   },
+  { href: "/sections/fiction", label: "Fiction" },
   { href: "/sections/features", label: "Features", gif: featuresGif.src },
-  { href: "/sections/from-the-stacks", label: "From the Stacks" },
 ];
 
 // Right navigation links in the header
 const navLinksRight: NavLink[] = [
-  { href: "/upcoming-events", label: "Upcoming Events" },
   { href: "/sections/photo-essays", label: "Photo Essays" },
+  { href: "/sections/from-the-stacks", label: "From the Stacks" },
   { href: "/sections/editorial-cartoons", label: "Editorial Cartoons" },
 ];
 ---
@@ -102,11 +102,7 @@ const navLinksRight: NavLink[] = [
   }
   <body>
     {/* Desktop header */}
-    <header
-      class="site-header desktop-only"
-      role="banner"
-      aria-label="Site navigation"
-    >
+    <header class="site-header desktop-only" aria-label="Site navigation">
       <nav id="nav-scroll" class="nav-scroll" aria-label="Primary sections">
         {/* Left nav elements */}
         {
@@ -119,7 +115,7 @@ const navLinksRight: NavLink[] = [
 
         {/* Center logo */}
         <a class="nav-logo" href={withBase("/")} aria-label="Stacks">
-          <Image src={stacksLogo} alt="Stacks" width={220} />
+          <Image src={stacksLogo} alt="Stacks" width={220} loading="eager" />
         </a>
 
         {/* Right nav elements */}
@@ -142,11 +138,11 @@ const navLinksRight: NavLink[] = [
     </header>
 
     {/* Mobile header */}
-    <div class="mobile-only" role="banner" aria-label="Mobile navigation">
+    <header class="mobile-only" aria-label="Mobile navigation">
       <div class="mobile-bar">
         {/* Logo */}
         <a class="mobile-logo" href={withBase("/")} aria-label="Stacks">
-          <Image src={stacksLogo} alt="Stacks" width={220} />
+          <Image src={stacksLogo} alt="Stacks" width={220} loading="eager" />
         </a>
 
         {/* Hamburger menu */}
@@ -188,10 +184,10 @@ const navLinksRight: NavLink[] = [
         <a href={withBase("/about")} class="nav-item separator">About</a>
         <a href={withBase("/issues")} class="nav-item">Issues</a>
       </nav>
-    </div>
+    </header>
 
     {/* Folio section */}
-    <div class="folio" role="contentinfo" aria-label="Folio">
+    <div class="folio">
       {/* Desktop folio */}
       <div class="folio-inner">
         <div id="folio-cluster" class="folio-cluster">
@@ -389,7 +385,6 @@ const navLinksRight: NavLink[] = [
 
       // Init desktop navigation GIFs
       (function () {
-        if (!matchMedia("(min-width:1024px)").matches) return;
         if (!matchMedia("(hover:hover) and (pointer:fine)").matches) return;
 
         const rail = document.getElementById("nav-scroll");
@@ -436,26 +431,25 @@ const navLinksRight: NavLink[] = [
 
       // Init mobile menu toggle + sequential GIF player
       (function () {
-        if (!matchMedia("(max-width:1023px)").matches) return;
-
         const btn = document.getElementById("mobile-menu-toggle");
         const menu = document.getElementById("mobile-menu");
         if (!btn || !menu) return;
 
         let sequenceTimeouts: ReturnType<typeof setTimeout>[] = [];
 
-        // Toggle mobile menu dropdown
-        btn.addEventListener("click", () => {
-          const isOpen = menu.classList.toggle("open");
-          btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
-          btn.classList.toggle("active", isOpen);
+        // Open or close the mobile menu dropdown
+        function setOpen(isOpen: boolean) {
+          if (menu!.classList.contains("open") === isOpen) return;
+          menu!.classList.toggle("open", isOpen);
+          btn!.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          btn!.classList.toggle("active", isOpen);
 
           // Clear previous GIF sequence
           sequenceTimeouts.forEach(clearTimeout);
           sequenceTimeouts = [];
 
           const gifLinks = Array.from(
-            menu.querySelectorAll(".nav-item.has-gif"),
+            menu!.querySelectorAll(".nav-item.has-gif"),
           );
 
           if (isOpen) {
@@ -500,9 +494,22 @@ const navLinksRight: NavLink[] = [
             });
           } else {
             document.body.style.overflow = "";
-            const gifs = menu.querySelectorAll("img.mobile-nav-gif");
+            const gifs = menu!.querySelectorAll("img.mobile-nav-gif");
             gifs.forEach((g) => g.remove());
           }
+        }
+
+        btn.addEventListener("click", () =>
+          setOpen(!menu.classList.contains("open")),
+        );
+
+        // Close on Escape, and when the viewport grows to the desktop layout
+        // (where the menu is hidden but would otherwise leave scrolling locked)
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") setOpen(false);
+        });
+        matchMedia("(min-width:1024px)").addEventListener("change", (e) => {
+          if (e.matches) setOpen(false);
         });
       })();
 

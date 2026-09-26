@@ -2,61 +2,17 @@
  * Styling for PageLayout.astro. 
  */
 
-/* Visibility Toggles */
-.desktop-only {
-	display: block;
-}
-.mobile-only {
-	display: none;
-}
-.folio-inner {
-	display: grid;
-}
+/* Desktop is the default; the mobile header and folio are switched in by the
+   (max-width: 1023px) block at the bottom of this file. */
+.mobile-only,
 .folio-mobile {
 	display: none;
-}
-
-@media (min-width: 1024px) {
-	.desktop-only {
-		display: block !important;
-	}
-	.mobile-only {
-		display: none !important;
-	}
-	.folio-inner {
-		display: grid !important;
-	}
-	.folio-mobile {
-		display: none !important;
-	}
-}
-
-@media (max-width: 1023px) {
-	.desktop-only {
-		display: none !important;
-	}
-	.mobile-only {
-		display: block !important;
-	}
-	.folio-inner {
-		display: none !important;
-	}
-	.folio-mobile {
-		display: flex !important;
-		align-items: center;
-		justify-content: center;
-		gap: 0.6rem;
-		width: 100%;
-		padding: 0 0.9rem;
-		font-family: var(--font-folio, var(--font-serif));
-	}
 }
 
 /* ========================================= */
 /* FOLIO (DESKTOP/WEB)                        */
 /* ========================================= */
 .folio {
-	height: var(--folio-h, 60px);
 	display: flex;
 	align-items: center;
 	border-bottom: 1px solid var(--color-border);
@@ -117,14 +73,12 @@
 	position: sticky;
 	top: 0;
 	z-index: 1000;
-	height: var(--header-height, 96px);
 	display: flex;
 	align-items: center;
 	background: var(--nav-bg, #000);
 	color: #fff;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 	width: 100%;
-	min-width: 100%;
 }
 
 .nav-scroll {
@@ -132,7 +86,6 @@
 	align-items: center;
 	justify-content: center;
 	width: 100%;
-	padding: 0 -20px;
 	overflow: visible;
 	gap: clamp(0.2rem, 1.5vw, 1.5rem);
 }
@@ -364,6 +317,21 @@ html.spin-once .floating-spin-btn {
 /* MOBILE-ONLY OVERRIDES                      */
 /* ========================================= */
 @media (max-width: 1023px) {
+	.desktop-only,
+	.folio-inner {
+		display: none;
+	}
+
+	/* The sticky element is the wrapper (a direct child of body), not the bar
+	   inside it: a sticky element can only travel within its parent, and the
+	   wrapper is exactly as tall as the bar. */
+	.mobile-only {
+		display: block;
+		position: sticky;
+		top: 0;
+		z-index: 1000;
+	}
+
 	.mobile-bar {
 		display: flex;
 		align-items: center;
@@ -374,9 +342,6 @@ html.spin-once .floating-spin-btn {
 		background: var(--nav-bg, #000);
 		color: #fff;
 		padding: 0 1.25rem;
-		position: sticky;
-		top: 0;
-		z-index: 1000;
 		box-sizing: border-box;
 	}
 
@@ -498,7 +463,7 @@ html.spin-once .floating-spin-btn {
 	}
 
 	.folio-mobile {
-		display: flex !important;
+		display: flex;
 		align-items: center;
 		justify-content: center;
 		gap: 0.6rem;

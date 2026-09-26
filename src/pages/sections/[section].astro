@@ -11,7 +11,7 @@ import { articleHref, getAllArticles } from "../../lib/issues";
  * @returns An array of objects containing each section.
  */
 export async function getStaticPaths() {
-  return sections.map((section) => ({
+  return sections.filter((section) => !section.customPage).map((section) => ({
     params: { section: section.slug },
     props: { section },
   }));

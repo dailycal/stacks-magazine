@@ -1,0 +1,18 @@
+---
+import PageLayout from "../../../layouts/PageLayout.astro";
+import { cartoonHref, getAllCartoons } from "../../../lib/cartoons";
+
+// /sections/editorial-cartoons sends readers to the most recently published
+// cartoon, decided at build time.
+const cartoons = await getAllCartoons();
+const latest = cartoons.at(-1);
+
+if (latest) return Astro.redirect(cartoonHref(latest.slug), 301);
+---
+
+<PageLayout
+  title="Editorial Cartoons — Stacks Magazine"
+  description="Editorial cartoons from Stacks Magazine."
+>
+  <p style="text-align: center; padding: 4rem 1rem;">No cartoons yet.</p>
+</PageLayout>

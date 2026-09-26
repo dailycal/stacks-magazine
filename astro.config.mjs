@@ -9,5 +9,12 @@ export default defineConfig({
   // Deployed to GitHub Pages at https://dailycal.github.io/stacks-magazine/
   site: 'https://dailycal.github.io',
   base: '/stacks-magazine',
-  integrations: [mdx(), sitemap()]
+  integrations: [
+    mdx(),
+    sitemap({
+      // /sections/editorial-cartoons only redirects to the latest cartoon
+      filter: (page) =>
+        !page.replace(/\/$/, "").endsWith("/sections/editorial-cartoons"),
+    }),
+  ]
 });

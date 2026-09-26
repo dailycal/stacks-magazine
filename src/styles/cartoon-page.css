@@ -1,0 +1,96 @@
+/*
+ * Styling for src/pages/sections/editorial-cartoons/[cartoon].astro: a dark
+ * stage with the cartoon centered, its title and author in white beneath it,
+ * and previous/next arrows on either side (styled after the old site's
+ * cartoon lightbox).
+ */
+
+.cartoon-stage {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr) auto;
+	align-items: center;
+	gap: 0.5rem;
+	min-height: 75dvh;
+	padding: 2rem 0.5rem;
+	background: rgba(15, 15, 15, 0.96);
+	color: #fff;
+}
+@media (min-width: 1024px) {
+	.cartoon-stage {
+		gap: 1.5rem;
+		padding: 2.5rem 1.5rem;
+	}
+}
+
+.cartoon-figure {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	min-width: 0;
+}
+.cartoon-figure img {
+	display: block;
+	max-width: 100%;
+	max-height: 70vh;
+	width: auto;
+	height: auto;
+	border: 1px solid #555;
+	box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+}
+
+.cartoon-figure figcaption {
+	margin-top: 1rem;
+	font-family: var(--font-serif);
+	line-height: 1.4;
+}
+.cartoon-title {
+	display: block;
+	margin-bottom: 4px;
+	font-size: 1.25rem;
+	font-weight: 700;
+}
+.cartoon-author {
+	display: block;
+	font-size: 1rem;
+	opacity: 0.85;
+}
+
+/* Previous/next arrows; a spacer keeps the image centered when one is missing */
+.cartoon-arrow,
+.cartoon-arrow-spacer {
+	width: 44px;
+	height: 44px;
+}
+.cartoon-arrow {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #fff;
+	opacity: 0.8;
+	text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+	transition:
+		opacity 0.2s,
+		transform 0.2s;
+}
+.cartoon-arrow:hover,
+.cartoon-arrow:focus-visible {
+	opacity: 1;
+	transform: scale(1.1);
+}
+.cartoon-arrow svg {
+	width: 28px;
+	height: 28px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+@media (max-width: 639px) {
+	.cartoon-arrow,
+	.cartoon-arrow-spacer {
+		width: 32px;
+	}
+}

@@ -9,6 +9,9 @@ export interface Section {
 	// Position of this section in the homepage's "Latest" article list
 	// (ascending). Use -1 to leave the section off the homepage.
 	homepageOrder: number;
+	// Set when the section has its own pages under /sections/<slug>, so the
+	// generic section page (src/pages/sections/[section].astro) skips it.
+	customPage?: boolean;
 }
 
 export const sections: Section[] = [
@@ -48,6 +51,7 @@ export const sections: Section[] = [
 		slug: "editorial-cartoons",
 		description: "Illustrated commentary on campus and city life.",
 		homepageOrder: -1,
+		customPage: true,
 	},
 	{
 		name: "Fiction",

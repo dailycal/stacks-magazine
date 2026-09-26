@@ -1,0 +1,96 @@
+---
+import { Image } from "astro:assets";
+import PageLayout from "../../../layouts/PageLayout.astro";
+import "../../../styles/cartoon-page.css";
+import { cartoonHref, getAllCartoons } from "../../../lib/cartoons";
+
+/**
+ * Gets the static paths for every cartoon, each with its neighbors in
+ * publication order (previous = older, next = newer).
+ * @returns An array of objects containing the cartoon param and its props.
+ */
+export async function getStaticPaths() {
+  const cartoons = await getAllCartoons();
+  return cartoons.map((cartoon, i) => ({
+    params: { cartoon: cartoon.slug },
+    props: { cartoon, previous: cartoons[i - 1], next: cartoons[i + 1] },
+  }));
+}
+
+const { cartoon, previous, next } = Astro.props;
+const { title, author, image } = cartoon;
+const alt = `“${title}”, an editorial cartoon by ${author}`;
+---
+
+<PageLayout
+  title={`“${title}” — Editorial Cartoons — Stacks Magazine`}
+  description={`${alt}.`}
+  image={image}
+  imageAlt={alt}
+>
+  <div class="cartoon-stage">
+    {/* Previous (older) cartoon */}
+    {
+      previous ? (
+        <a
+          class="cartoon-arrow"
+          href={cartoonHref(previous.slug)}
+          rel="prev"
+          aria-label={`Previous cartoon: ${previous.title}`}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 5l-7 7 7 7" />
+          </svg>
+        </a>
+      ) : (
+        <span class="cartoon-arrow-spacer" aria-hidden="true" />
+      )
+    }
+
+    {/* Cartoon, title and author */}
+    <figure class="cartoon-figure">
+      <Image
+        src={image}
+        alt={alt}
+        widths={[640, 960, 1280, 1920, 2560]}
+        sizes="(min-width: 1024px) 80vw, 90vw"
+        loading="eager"
+      />
+      <figcaption>
+        <span class="cartoon-title">“{title}”</span>
+        <span class="cartoon-author">Cartoon by {author}</span>
+      </figcaption>
+    </figure>
+
+    {/* Next (newer) cartoon */}
+    {
+      next ? (
+        <a
+          class="cartoon-arrow"
+          href={cartoonHref(next.slug)}
+          rel="next"
+          aria-label={`Next cartoon: ${next.title}`}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      ) : (
+        <span class="cartoon-arrow-spacer" aria-hidden="true" />
+      )
+    }
+  </div>
+</PageLayout>
+
+<script>
+  // Left/right arrow keys step through the cartoons
+  document.addEventListener("keydown", (e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+    const rel =
+      e.key === "ArrowLeft" ? "prev" : e.key === "ArrowRight" ? "next" : null;
+    if (!rel) return;
+    document
+      .querySelector<HTMLAnchorElement>(`.cartoon-stage a[rel="${rel}"]`)
+      ?.click();
+  });
+</script>

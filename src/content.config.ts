@@ -24,6 +24,9 @@ const articles = defineCollection({
 			featuredImage: z.union([image(), z.url()]).optional(),
 			featuredImageAlt: z.string().optional(),
 			featuredImageCaption: z.string().optional(),
+			// Hide the featured image on the article page itself (it still appears on
+			// cards and social previews) when the body already opens with that image.
+			skipFeaturedImage: z.boolean().default(false),
 		}),
 });
 

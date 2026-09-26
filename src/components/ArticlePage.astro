@@ -24,6 +24,7 @@ const {
   featuredImage,
   featuredImageAlt,
   featuredImageCaption,
+  skipFeaturedImage,
 } = entry.data;
 const { Content } = await render(entry);
 
@@ -100,7 +101,7 @@ const isoDate = publishDate.toISOString().slice(0, 10);
 
       {/* Featured image */}
       {
-        featuredImage && (
+        featuredImage && !skipFeaturedImage && (
           <ArticleImage
             src={featuredImage}
             alt={featuredImageAlt ?? ""}

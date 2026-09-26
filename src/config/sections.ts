@@ -49,4 +49,10 @@ export const sections: Section[] = [
 		description: "Illustrated commentary on campus and city life.",
 		homepageOrder: -1,
 	},
+	{
+		name: "Fiction",
+		slug: "fiction",
+		description: "Short stories and creative writing.",
+		homepageOrder: 7,
+	},
 ];

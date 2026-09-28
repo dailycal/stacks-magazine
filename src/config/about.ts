@@ -2,99 +2,114 @@
 // staff, editors, creative, and credits listings.
 
 export interface MastheadPerson {
-	name: string;
-	url?: string;
+  name: string;
+  url?: string;
 }
 
 export interface MastheadEntry {
-	role: string;
-	people: MastheadPerson[];
+  role: string;
+  people: MastheadPerson[];
 }
 
 export interface MastheadSection {
-	heading?: string;
-	entries: MastheadEntry[];
+  heading?: string;
+  entries: MastheadEntry[];
 }
 
 export const about: {
-	staff: MastheadSection;
-	editors: MastheadSection;
-	creative: MastheadSection;
-	credits: MastheadSection;
+  staff: MastheadSection;
+  editors: MastheadSection;
+  creative: MastheadSection;
+  credits: MastheadSection;
 } = {
   // Staff section
-	staff: {
-		entries: [
-			{ role: "Editor-in-Chief", people: [{ name: "Ananya Rupanagunta" }] },
-			{ role: "Managing Editor", people: [{ name: "Chrissa Olson" }] },
-			{ role: "Creative Director", people: [{ name: "Sally King" }] },
-		],
-	},
+  staff: {
+    entries: [
+      { role: "Editor-in-Chief", people: [{ name: "Swasti Singhai" }] },
+      { role: "Managing Editor", people: [{ name: "Aarya Mukherjee" }] },
+      { role: "Creative Director", people: [{ name: "Hayes Gaboury" }] },
+    ],
+  },
   // Editors section
-	editors: {
-		heading: "Editors",
-		entries: [
-			{
-				role: "Magazine Managing Editor",
-				people: [{ name: "Clara Brownstein" }],
-			},
-			{
-				role: "Editors",
-				people: [{ name: "Elise Fisher" }, { name: "Sam Grotenstein" }],
-			},
-			{
-				role: "Contributing Editors",
-				people: [{ name: "Elsa Ying" }, { name: "Milo Kofman" }],
-			},
-			{
-				role: "Night Editors",
-				people: [
-					{ name: "Caroline Hunt" },
-					{ name: "Ella Kirshbaum" },
-					{ name: "Kelcie Lee" },
-					{ name: "Megan Lam" },
-					{ name: "Serene Han" },
-				],
-			},
-		],
-	},
-	// Creative section
-	creative: {
-		heading: "Creative",
-		entries: [
-			{ role: "Graphics editor", people: [{ name: "Eleanor Robertson" }] },
-			{ role: "Photo editor", people: [{ name: "Ahana Sur" }] },
-		],
-	},
+  editors: {
+    heading: "Editors",
+    entries: [
+      {
+        role: "Magazine Managing Editor",
+        people: [{ name: "Sam Grotenstein" }, { name: "Blue Burkett" }],
+      },
+      {
+        role: "Editors",
+        people: [{ name: "Tingri Monahan" }, { name: "Jolie Feld" }],
+      },
+      {
+        role: "Contributing Editors",
+        people: [{ name: "Caleb Silver" }, { name: "Elise Fisher" }],
+      },
+      {
+        role: "Night Editors",
+        people: [
+          { name: "Caroline Hunt" },
+          { name: "Ella Kirshbaum" },
+          { name: "Kelcie Lee" },
+          { name: "Megan Lam" },
+          { name: "Serene Han" },
+        ],
+      },
+    ],
+  },
+  // Creative section
+  creative: {
+    heading: "Creative",
+    entries: [
+      {
+        role: "Graphics editor", people: [
+          { name: "Eleanor Robertson" },
+          { name: "Noelle Chang" }
+        ]
+      },
+      {
+        role: "Photo editors", people: [
+          { name: "Mina Lavapies" },
+          { name: "Ella Reed" },
+          { name: "Joe Zheng" }
+        ]
+      },
+    ],
+  },
   // Credits section
-	credits: {
-		heading: "Credits",
-		entries: [
-			{
-				role: "Website by",
-				people: [
-					{
-						name: "Joever Orillosa",
-						url: "https://www.ocf.berkeley.edu/~joever/portfoli0_o",
-					},
-					{ name: "Siddhartha Chatterjee" },
-				],
-			},
-			{
-				role: "Logo by",
-				people: [{ name: "Alyssa Nguyen" }],
-			},
-			{
-				role: "Founding Editors",
-				people: [
-					{ name: "Clara Brownstein" },
-					{ name: "Ananya Rupanagunta" },
-					{ name: "Aarya Mukherjee" },
-					{ name: "Elise Fisher" },
-					{ name: "Sam Grotenstein" },
-					{ name: "Stella Merims" },
-				],
-			},
-		],
-	},
+  credits: {
+    heading: "Credits",
+    entries: [
+      {
+        role: "Website by",
+        people: [
+          {
+            name: "Joever Orillosa",
+            url: "https://www.ocf.berkeley.edu/~joever/portfoli0_o",
+          },
+          { name: "Siddhartha Chatterjee" },
+          {
+            name: "Brendan Raykoff",
+            url: "https://raykoff.org/"
+          }
+        ],
+      },
+      {
+        role: "Logo by",
+        people: [{ name: "Alyssa Nguyen" }],
+      },
+      {
+        role: "Founding Editors",
+        people: [
+          { name: "Clara Brownstein" },
+          { name: "Ananya Rupanagunta" },
+          { name: "Aarya Mukherjee" },
+          { name: "Elise Fisher" },
+          { name: "Sam Grotenstein" },
+          { name: "Stella Merims" },
+        ],
+      },
+    ],
+  },
 };

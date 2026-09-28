@@ -175,6 +175,12 @@
 .issue-cover-frame h2 {
 	margin: 0.5rem 0 1.5rem;
 	font-size: 1.25rem;
+	/* Explicit rather than inherited: .issue-toc sets its own line-height
+	   (below) but .issue-cover-frame doesn't, so without this its h2 fell
+	   back to body's global line-height — taller, which pushed its text down
+	   inside the line box and threw off the two headings' vertical alignment
+	   even though their boxes shared the same top edge. */
+	line-height: 1.3;
 }
 .issue-toc ul {
 	list-style: none;

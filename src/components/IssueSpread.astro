@@ -128,13 +128,19 @@ const hasPdf = Boolean(issue.pdf);
 			positionBackdrop();
 			iframe!.src = pdfUrl;
 			backdrop!.hidden = false;
-			document.body.style.overflow = "hidden";
+			// Lock scroll on <html> (the actual scrolling element here), not
+			// <body>: giving <body> its own `overflow` makes it a scroll
+			// container in its own right, which hijacks the sticky header's
+			// containing block from the viewport to <body> — since <body>
+			// itself never scrolls internally, the header then renders at its
+			// static offset instead of staying pinned to the viewport.
+			document.documentElement.style.overflow = "hidden";
 		}
 
 		function close() {
 			backdrop!.hidden = true;
 			iframe!.src = "";
-			document.body.style.overflow = "";
+			document.documentElement.style.overflow = "";
 		}
 
 		triggers.forEach((trigger) => {

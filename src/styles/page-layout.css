@@ -500,3 +500,66 @@ html.spin-once .floating-spin-btn {
 		width: 70px;
 	}
 }
+
+/* ========================================= */
+/* HOMEPAGE INTRO SPIN OVERLAY                */
+/* (see PageLayout.astro's showIntroSpin prop) */
+/* ========================================= */
+.intro-spin-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 9999;
+	background: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition:
+		opacity 0.35s ease,
+		visibility 0.35s ease;
+}
+.intro-spin-overlay img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.intro-spin-overlay.hidden {
+	opacity: 0;
+	visibility: hidden;
+}
+
+.intro-fade-content {
+	opacity: 0;
+	transform: translateY(6px);
+	transition:
+		opacity 0.35s ease,
+		transform 0.35s ease;
+}
+.intro-fade-content.fading {
+	opacity: 0.95;
+	transform: translateY(0);
+}
+.intro-fade-content.visible {
+	opacity: 1;
+	transform: none;
+}
+
+/* Already played this session: skip straight to the end state, no flash */
+html.skip-intro-spin .intro-spin-overlay {
+	display: none;
+}
+html.skip-intro-spin .intro-fade-content {
+	opacity: 1;
+	transform: none;
+	transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.intro-spin-overlay {
+		display: none;
+	}
+	.intro-fade-content {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+}

@@ -30,6 +30,9 @@ interface Props {
   authors?: string[];
   noindex?: boolean;
   includeSeo?: boolean;
+  // Plays the old site's once-per-session spin loader over the page before
+  // it fades in (see index.astro, the only page that sets this).
+  showIntroSpin?: boolean;
 }
 
 const {
@@ -44,6 +47,7 @@ const {
   authors,
   noindex,
   includeSeo = true,
+  showIntroSpin = false,
 } = Astro.props;
 
 // Navigation link interface
@@ -83,6 +87,22 @@ const navLinksRight: NavLink[] = [
   <link rel="icon" type="image/png" href={withBase("/favicon.png")} />
   <link rel="icon" href={withBase("/favicon.ico")} />
   {
+    showIntroSpin && (
+      // is:inline: this must run synchronously while <head> is still parsing,
+      // before the overlay below ever paints, or a repeat visit would flash
+      // it before this hides it.
+      <script is:inline>
+        (function () {
+          try {
+            if (sessionStorage.getItem("stacksIntroSpinShown")) {
+              document.documentElement.classList.add("skip-intro-spin");
+            }
+          } catch (e) {}
+        })();
+      </script>
+    )
+  }
+  {
     includeSeo ? (
       <SEO
         title={title}
@@ -101,6 +121,14 @@ const navLinksRight: NavLink[] = [
     )
   }
   <body>
+    {
+      showIntroSpin && (
+        <div id="intro-spin-overlay" class="intro-spin-overlay" aria-hidden="true">
+          <img src={spiralAnim.src} alt="" />
+        </div>
+      )
+    }
+
     {/* Desktop header */}
     <header class="site-header desktop-only" aria-label="Site navigation">
       <nav id="nav-scroll" class="nav-scroll" aria-label="Primary sections">
@@ -244,7 +272,7 @@ const navLinksRight: NavLink[] = [
     </div>
 
     {/* Main content slot */}
-    <main>
+    <main class:list={[{ "intro-fade-content": showIntroSpin }]}>
       <slot />
     </main>
 
@@ -566,5 +594,35 @@ const navLinksRight: NavLink[] = [
         }
       })();
     </script>
+
+    {
+      showIntroSpin && (
+        <script>
+          // Plays the spin overlay once per browser session: fade the page
+          // content in shortly after it starts, then hide the overlay once
+          // it's done, matching the old site's loader timing.
+          (function () {
+            if (document.documentElement.classList.contains("skip-intro-spin"))
+              return;
+
+            const overlay = document.getElementById("intro-spin-overlay");
+            const content = document.querySelector(".intro-fade-content");
+            if (!overlay || !content) return;
+
+            const BEGIN_FADE_MS = 100;
+            const HIDE_MS = 1600;
+
+            setTimeout(() => content.classList.add("fading"), BEGIN_FADE_MS);
+            setTimeout(() => {
+              overlay.classList.add("hidden");
+              content.classList.add("visible");
+              try {
+                sessionStorage.setItem("stacksIntroSpinShown", "1");
+              } catch (e) {}
+            }, HIDE_MS);
+          })();
+        </script>
+      )
+    }
   </body>
 </html>

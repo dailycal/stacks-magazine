@@ -90,7 +90,15 @@
 	gap: clamp(0.2rem, 1.5vw, 1.5rem);
 }
 
-.nav-scroll a {
+.nav-scroll a,
+.nav-scroll button.nav-item {
+	/* Button-only reset, applied first so the actual styling below (shared
+	   with the <a> this selector also matches) isn't the part overridden. */
+	background: none;
+	border: none;
+	cursor: pointer;
+	font: inherit;
+
 	position: relative;
 	display: inline-flex;
 	align-items: center;
@@ -139,7 +147,8 @@
 	white-space: nowrap;
 }
 .nav-item-group:hover .nav-dropdown,
-.nav-item-group:focus-within .nav-dropdown {
+.nav-item-group:focus-within .nav-dropdown,
+.nav-item-group.open .nav-dropdown {
 	display: block;
 }
 .nav-dropdown .nav-item-sub {

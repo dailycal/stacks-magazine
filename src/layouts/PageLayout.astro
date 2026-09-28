@@ -69,18 +69,16 @@ const navLinksLeft: NavLink[] = [
   { href: "/sections/features", label: "Features", gif: featuresGif.src },
 ];
 
-// Right navigation links in the header
+// Right navigation links in the header, after the Visuals dropdown (Photo
+// Essays and Editorial Cartoons — see the desktop/mobile nav markup below).
 const navLinksRight: NavLink[] = [
-  { href: "/sections/photo-essays", label: "Photo Essays" },
   { href: "/sections/from-the-stacks", label: "From the Stacks" },
-  { href: "/sections/editorial-cartoons", label: "Editorial Cartoons" },
 ];
 ---
 
 <!doctype html>
 <html lang="en">
   {/* Head Metadata */}
-
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="generator" content={Astro.generator} />
@@ -146,6 +144,27 @@ const navLinksRight: NavLink[] = [
           <Image src={stacksLogo} alt="Stacks" width={220} loading="eager" />
         </a>
 
+        {/* Visuals dropdown: click-toggled (see the script below), not a link —
+            there's no /visuals page yet. */}
+        <div class="nav-item-group" data-click-dropdown>
+          <button
+            type="button"
+            class="nav-item nav-item-parent"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            Visuals
+          </button>
+          <div class="nav-dropdown" aria-label="Visuals submenu">
+            <a href={withBase("/sections/photo-essays")} class="nav-item nav-item-sub">
+              Photo Essays
+            </a>
+            <a href={withBase("/sections/editorial-cartoons")} class="nav-item nav-item-sub">
+              Editorial Cartoons
+            </a>
+          </div>
+        </div>
+
         {/* Right nav elements */}
         {
           navLinksRight.map((item) => (
@@ -207,6 +226,11 @@ const navLinksRight: NavLink[] = [
             ),
           )
         }
+
+        {/* Visuals and its sub-items (no /visuals page yet, so no link on mobile either) */}
+        <span class="nav-item separator" aria-hidden="true">Visuals</span>
+        <a href={withBase("/sections/photo-essays")} class="nav-item">Photo Essays</a>
+        <a href={withBase("/sections/editorial-cartoons")} class="nav-item">Editorial Cartoons</a>
 
         {/* About and issues links */}
         <a href={withBase("/about")} class="nav-item separator">About</a>
@@ -454,6 +478,44 @@ const navLinksRight: NavLink[] = [
               setTimeout(() => old.remove(), 160);
             }
           });
+        });
+      })();
+
+      // Init click-toggled dropdowns (currently just Visuals — it isn't a
+      // link, so it needs a click to open rather than relying on :hover)
+      (function () {
+        const groups = document.querySelectorAll<HTMLElement>(
+          "[data-click-dropdown]",
+        );
+        if (groups.length === 0) return;
+
+        function close(group: HTMLElement) {
+          group.classList.remove("open");
+          const button = group.querySelector<HTMLElement>("[aria-expanded]");
+          button?.setAttribute("aria-expanded", "false");
+          // Also drop focus: the dropdown is shown by CSS on :focus-within
+          // too (for keyboard use on the hover-based dropdowns), so leaving
+          // the button focused would keep this one open regardless of the
+          // "open" class above.
+          if (document.activeElement === button) button?.blur();
+        }
+
+        groups.forEach((group) => {
+          const button = group.querySelector("button");
+          button?.addEventListener("click", () => {
+            const isOpen = group.classList.toggle("open");
+            button.setAttribute("aria-expanded", isOpen ? "true" : "false");
+          });
+        });
+
+        // Close on an outside click, or Escape, or the menu's own links
+        document.addEventListener("click", (e) => {
+          groups.forEach((group) => {
+            if (!group.contains(e.target as Node)) close(group);
+          });
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") groups.forEach(close);
         });
       })();
 

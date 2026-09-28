@@ -41,23 +41,25 @@
 	text-align: inherit;
 }
 
-/* The frame sizes and centers once — capped by viewport height (mobile more
-   tightly, since it's stacked below the nav rather than sharing a row with
-   the TOC) so the cover can't blow past a single page's height — and both
-   the cover box and its caption size to 100% of the frame, so they always
-   share the same edges no matter what the cap works out to. */
+/* Matches the old site's actual rendered size: capped by height (80vh —
+   confirmed against the live site's computed styles) rather than stretched
+   to fill the column, so it's usually narrower than the column and centered
+   within it. Sized here (the box itself), not via object-fit on a
+   full-width image, so the hover hint below and the caption below that both
+   hug the image's real edges instead of a wider, letterboxed box. The old
+   site adds a 3% zoom on top of the 80vh cap at desktop widths only — baked
+   into the width here since it's simpler than transform + overflow-clipping
+   an oversized box for the same visual result. */
 .issue-cover-frame {
-	width: min(100%, 55dvh * 1190 / 1546);
+	width: min(100%, 80vh * 1190 / 1546);
 	margin: 0 auto;
 }
 @media (min-width: 1024px) {
 	.issue-cover-frame {
-		width: min(100%, 75dvh * 1190 / 1546);
+		width: min(100%, 80vh * 1190 / 1546 * 1.03);
 	}
 }
 
-/* The cover image always keeps the standard cover's dimensions (1190x1546px).
-   The placeholder's own sizing lives in issue-cover.css. */
 .issue-cover img {
 	width: 100%;
 	aspect-ratio: 1190 / 1546;

@@ -83,6 +83,21 @@ Put an article's images in `src/assets/images/<same folder as the article>/<arti
 
 An external URL works too, as a plain string.
 
+Run these through the [image optimization pipeline](#optimizing-images) before committing them. Source photos straight off a camera or phone are typically 10-25MB, which is a lot to ship over the wire for something that renders at a few hundred pixels wide.
+
+## Optimizing images
+
+`npm run optimize` converts an image to a web-optimized AVIF, in place: it replaces `<image>` with `<image-without-its-old-extension>.avif` in the same folder, deleting the original (unless `--keep-original` is given), and prints how much smaller it got.
+
+```bash
+npm run optimize -- src/assets/images/issue-april-2026/my-article/cover.jpg
+npm run optimize -- path/to/one.jpg path/to/two.png --keep-original   # multiple files, keep originals
+```
+
+**The `--` is required.** Without it, flags and arguments get ingested by npm and not passed on to the script.
+
+Almost all image formats are supported, except for raw camera photo formats (export these to JPEG or PNG first). Do not optimize svg images, they are already optimized.
+
 ## Adding an issue
 
 1. Add the issue's cover image to `src/assets/covers/`.

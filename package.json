@@ -9,12 +9,14 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "optimize": "node scripts/optimize-image.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.7",
     "@astrojs/sitemap": "^3.7.4",
-    "astro": "^7.2.4"
+    "astro": "^7.2.4",
+    "sharp": "^0.35.4"
   },
   "allowScripts": {
     "esbuild@0.28.2": true,

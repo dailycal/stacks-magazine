@@ -127,7 +127,7 @@ Cartoons are ordered by `date`; the newest one is what `/sections/editorial-cart
 - **`issues.ts`** — see [Adding an issue](#adding-an-issue) above.
 - **`about.ts`** — the About page's masthead (Staff / Editors / Creative / Credits). Each section is a list of `{ role, people: [{ name, url? }] }` entries; `url` is optional and links the person's name.
 
-## Anything else you might want to change
+## Other configurations
 
 - **Top nav links** are hardcoded as `navLinksLeft`/`navLinksRight` arrays directly in `src/layouts/PageLayout.astro`, along with the Visuals and About dropdowns just below them in the same file. Change them there.
 - **Site-wide SEO defaults** (site name, default description/social image, JSON-LD) live in `src/components/SEO.astro`. Per-page overrides are passed as props from `PageLayout.astro`.

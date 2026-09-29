@@ -30,7 +30,20 @@ const articles = defineCollection({
 			}),
 			issue: z.string().optional(),
 			staffAttribution: z.boolean().default(false),
-			featuredImage: z.union([image(), z.url()]).optional(),
+			featuredImage: z
+				.union([
+					// A public/ file, referenced by its site-root path (e.g.
+					// "/some-image.jpg"); base-prefixed via withBase() wherever it's
+					// rendered (see SmartImage.astro and SEO.astro). This has to come
+					// before image() below: image() accepts *any* string at this
+					// point (it only fails later, at build, once Astro tries and
+					// fails to resolve it as a src/-relative asset), so a root path
+					// would otherwise never reach this branch.
+					z.string().regex(/^\/(?!\/)/),
+					z.url(),
+					image(),
+				])
+				.optional(),
 			featuredImageAlt: z.string().optional(),
 			featuredImageCaption: z.string().optional(),
 			// Hide the featured image on the article page itself (it still appears on

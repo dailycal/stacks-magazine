@@ -59,7 +59,12 @@ const defaultCoverImage = resolveIssueCoverImage(getMostRecentIssueMeta());
 
 function toAbsoluteImage(source: ImageMetadata | string) {
   if (typeof source === "string") {
-    return { url: new URL(source, site).href, width: undefined, height: undefined };
+    // withBase() no-ops on a full external URL and only prefixes a
+    // public/-style root path — necessary before resolving against `site`,
+    // since `site` has no path of its own for a root path to combine with
+    // (new URL("/x.jpg", site) would otherwise drop the "/stacks-magazine"
+    // base entirely instead of nesting under it).
+    return { url: new URL(withBase(source), site).href, width: undefined, height: undefined };
   }
   return {
     url: new URL(source.src, site).href,

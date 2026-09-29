@@ -371,7 +371,7 @@ const navLinksRight: NavLink[] = [
         const titleEl = document.getElementById("time-title");
         const tz = "America/Los_Angeles";
 
-        let plus10 = false;
+        let shifted = false;
 
         // Format date and time
         const fmt = (d: Date) => {
@@ -395,23 +395,23 @@ const navLinksRight: NavLink[] = [
         // Tick the clock
         function tick() {
           const now = new Date();
-          const show = new Date(now.getTime() + (plus10 ? 10 * 60000 : 0));
+          const show = new Date(now.getTime() - (shifted ? 10 * 60000 : 0));
           if (clockEl) clockEl.textContent = fmt(show);
         }
         setInterval(tick, 250);
         tick();
 
         // Set (and apply) the BERKELEY TIME state
-        function setPlus10(value: boolean) {
-          plus10 = value;
+        function setShifted(value: boolean) {
+          shifted = value;
           if (titleEl)
-            titleEl.textContent = plus10 ? "BERKELEY TIME" : "Berkeley, CA";
+            titleEl.textContent = shifted ? "BERKELEY TIME" : "Berkeley, CA";
           tick();
         }
 
         // Toggle BERKELEY TIME
         toggleBerkeleyTime = function () {
-          setPlus10(!plus10);
+          setShifted(!shifted);
         };
 
         // BERKELEY TIME hit box
@@ -420,12 +420,12 @@ const navLinksRight: NavLink[] = [
         // Show/hide BERKELEY TIME on hover
         block?.addEventListener("pointerenter", (e) => {
           if (e.pointerType !== "mouse" && e.pointerType !== "pen") return;
-          setPlus10(true);
+          setShifted(true);
         });
 
         block?.addEventListener("pointerleave", (e) => {
           if (e.pointerType !== "mouse" && e.pointerType !== "pen") return;
-          setPlus10(false);
+          setShifted(false);
         });
 
         // Toggle BERKELEY TIME on touch tap

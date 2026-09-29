@@ -130,55 +130,60 @@ const navLinksRight: NavLink[] = [
     {/* Desktop header */}
     <header class="site-header desktop-only" aria-label="Site navigation">
       <nav id="nav-scroll" class="nav-scroll" aria-label="Primary sections">
-        {/* Left nav elements */}
-        {
-          navLinksLeft.map((item) => (
-            <a href={withBase(item.href)} class="nav-item" data-gif={item.gif}>
-              {item.label}
-            </a>
-          ))
-        }
+        {/* Left nav elements, packed toward the logo */}
+        <div class="nav-group nav-group-left">
+          {
+            navLinksLeft.map((item) => (
+              <a href={withBase(item.href)} class="nav-item" data-gif={item.gif}>
+                {item.label}
+              </a>
+            ))
+          }
+        </div>
 
-        {/* Center logo */}
+        {/* Center logo — absolutely positioned so it stays exactly centered
+            regardless of how much content is in the two groups either side. */}
         <a class="nav-logo" href={withBase("/")} aria-label="Stacks">
           <Image src={stacksLogo} alt="Stacks" width={220} loading="eager" />
         </a>
 
-        {/* Visuals dropdown: click-toggled (see the script below), not a link —
-            there's no /visuals page yet. */}
-        <div class="nav-item-group" data-click-dropdown>
-          <button
-            type="button"
-            class="nav-item nav-item-parent"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            Visuals
-          </button>
-          <div class="nav-dropdown" aria-label="Visuals submenu">
-            <a href={withBase("/sections/photo-essays")} class="nav-item nav-item-sub">
-              Photo Essays
-            </a>
-            <a href={withBase("/sections/editorial-cartoons")} class="nav-item nav-item-sub">
-              Editorial Cartoons
-            </a>
+        {/* Right nav elements, packed toward the logo */}
+        <div class="nav-group nav-group-right">
+          {/* Visuals dropdown: click-toggled (see the script below), not a
+              link — there's no /visuals page yet. */}
+          <div class="nav-item-group" data-click-dropdown>
+            <button
+              type="button"
+              class="nav-item nav-item-parent"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Visuals
+            </button>
+            <div class="nav-dropdown" aria-label="Visuals submenu">
+              <a href={withBase("/sections/photo-essays")} class="nav-item nav-item-sub">
+                Photo Essays
+              </a>
+              <a href={withBase("/sections/editorial-cartoons")} class="nav-item nav-item-sub">
+                Editorial Cartoons
+              </a>
+            </div>
           </div>
-        </div>
 
-        {/* Right nav elements */}
-        {
-          navLinksRight.map((item) => (
-            <a href={withBase(item.href)} class="nav-item" data-gif={item.gif}>
-              {item.label}
-            </a>
-          ))
-        }
+          {
+            navLinksRight.map((item) => (
+              <a href={withBase(item.href)} class="nav-item" data-gif={item.gif}>
+                {item.label}
+              </a>
+            ))
+          }
 
-        {/* About dropdown */}
-        <div class="nav-item-group">
-          <a href={withBase("/about")} class="nav-item nav-item-parent">About</a>
-          <div class="nav-dropdown" aria-label="About submenu">
-            <a href={withBase("/issues")} class="nav-item nav-item-sub">Issues</a>
+          {/* About dropdown */}
+          <div class="nav-item-group">
+            <a href={withBase("/about")} class="nav-item nav-item-parent">About</a>
+            <div class="nav-dropdown" aria-label="About submenu">
+              <a href={withBase("/issues")} class="nav-item nav-item-sub">Issues</a>
+            </div>
           </div>
         </div>
       </nav>

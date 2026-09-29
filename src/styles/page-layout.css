@@ -79,15 +79,46 @@
 	color: #fff;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 	width: 100%;
+	/* The logo is now position:absolute (see .nav-scroll a.nav-logo below),
+	   so it no longer contributes to this row's auto height — without an
+	   explicit minimum here, the bar would shrink to fit just the (shorter)
+	   nav-item text and the logo would overflow above and below it. Sized to
+	   the logo image itself (15vw, clamped 100–220px, at its 220:65 aspect
+	   ratio) plus a little breathing room above and below. */
+	min-height: calc(min(max(15vw, 100px), 220px) * 65 / 220 + 1.2rem);
 }
 
 .nav-scroll {
+	/* The logo is centered via position:absolute below, independent of the
+	   width of either .nav-group, so it stays exactly centered even when the
+	   two groups' content isn't the same width. */
+	position: relative;
 	display: flex;
 	align-items: center;
-	justify-content: center;
 	width: 100%;
 	overflow: visible;
+}
+
+.nav-group {
+	display: flex;
+	align-items: center;
+	flex: 1 1 0;
+	min-width: 0;
 	gap: clamp(0.2rem, 1.5vw, 1.5rem);
+	/* Reserves exactly the logo's own half-width, so the nearest item sits
+	   the same gap away from the logo's edge as it does from its neighbors
+	   (the same math as the shared `gap` above, just also clearing the
+	   logo's footprint, which no longer takes up flex space now that it's
+	   position:absolute). */
+	padding: 0 calc(min(max(15vw, 100px), 220px) / 2 + clamp(0.2rem, 1.5vw, 1.5rem));
+}
+.nav-group-left {
+	justify-content: flex-end;
+	padding-left: 0;
+}
+.nav-group-right {
+	justify-content: flex-start;
+	padding-right: 0;
 }
 
 .nav-scroll a,
@@ -117,6 +148,19 @@
 .nav-logo,
 .mobile-logo {
 	text-decoration: none;
+}
+/* Higher specificity than ".nav-scroll a" (which also matches this <a>,
+   setting position:relative among other things) so this actually wins. */
+.nav-scroll a.nav-logo {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	/* Otherwise inherited from ".nav-scroll a" above — the logo doesn't need
+	   the breathing room that's for link text, and both .nav-group's reserved
+	   space (below) and .site-header's min-height (above) are sized to the
+	   image itself, so any padding here would throw both off. */
+	padding: 0;
 }
 
 .nav-logo img {

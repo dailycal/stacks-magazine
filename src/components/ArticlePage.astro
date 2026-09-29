@@ -25,6 +25,7 @@ const {
   featuredImageAlt,
   featuredImageCaption,
   skipFeaturedImage,
+  keywords,
 } = entry.data;
 const { Content } = await render(entry);
 
@@ -62,6 +63,7 @@ const isoDate = publishDate.toISOString().slice(0, 10);
   authors={authors}
   image={featuredImage}
   imageAlt={featuredImageAlt}
+  keywords={keywords}
 >
   <article class="article-full">
     {/* Header */}

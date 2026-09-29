@@ -36,6 +36,8 @@ const articles = defineCollection({
 			// Hide the featured image on the article page itself (it still appears on
 			// cards and social previews) when the body already opens with that image.
 			skipFeaturedImage: z.boolean().default(false),
+			// Populates <meta name="keywords">; omitted entirely when not set.
+			keywords: z.array(z.string()).optional(),
 		}),
 });
 

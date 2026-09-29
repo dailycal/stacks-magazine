@@ -28,6 +28,8 @@ export interface Props {
   authors?: string[];
   /** Keep a page out of search results (e.g. utility pages). */
   noindex?: boolean;
+  /** Populates <meta name="keywords">; the tag is omitted entirely when unset. */
+  keywords?: string[];
 }
 
 const SITE_NAME = "Stacks Magazine";
@@ -45,6 +47,7 @@ const {
   modifiedTime,
   authors,
   noindex = false,
+  keywords,
 } = Astro.props;
 
 // Astro.site is always set (see astro.config.mjs); non-null for URL joins below.
@@ -102,6 +105,9 @@ const structuredData =
 
 <title>{title}</title>
 <meta name="description" content={description} />
+{keywords && keywords.length > 0 && (
+  <meta name="keywords" content={keywords.join(", ")} />
+)}
 <link rel="canonical" href={canonicalURL.href} />
 <meta
   name="robots"

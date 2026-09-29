@@ -29,6 +29,7 @@ interface Props {
   modifiedTime?: Date;
   authors?: string[];
   noindex?: boolean;
+  keywords?: string[];
   includeSeo?: boolean;
   // Plays the old site's once-per-session spin loader over the page before
   // it fades in (see index.astro, the only page that sets this).
@@ -46,6 +47,7 @@ const {
   modifiedTime,
   authors,
   noindex,
+  keywords,
   includeSeo = true,
   showIntroSpin = false,
 } = Astro.props;
@@ -113,6 +115,7 @@ const navLinksRight: NavLink[] = [
         modifiedTime={modifiedTime}
         authors={authors}
         noindex={noindex}
+        keywords={keywords}
       />
     ) : (
       <title>{title}</title>

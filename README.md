@@ -59,6 +59,10 @@ section: "Essays"
 featuredImage: "../../assets/images/issue-april-2026/my-article/cover.jpg"
 featuredImageAlt: "Description of the photo"
 featuredImageCaption: "Photo by Jane Doe"
+issue: "issue-april-2026" # optional
+staffAttribution: false # optional
+skipFeaturedImage: false # optional
+keywords: [] # optional
 ---
 
 import ArticleImage from "../../components/ArticleImage.astro";

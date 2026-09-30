@@ -25,26 +25,26 @@ export const sections: Section[] = [
 		name: "Essays",
 		slug: "essays",
 		description: "Personal narratives and essays.",
-		homepageOrder: 2,
+		homepageOrder: 3,
 	},
 	{
 		name: "Features",
 		slug: "features",
 		description: "Local arts and culture.",
-		homepageOrder: 3,
+		homepageOrder: 4,
 	},
 	{
 		name: "From the Stacks",
 		slug: "from-the-stacks",
 		description:
 			"Metaphorically dig through archived issues of the Daily Cal to get a glimpse of life in Berkeley, from noteworthy headlines to everyday reporting that has been otherwise lost in the stacks.",
-		homepageOrder: 4,
+		homepageOrder: 5,
 	},
 	{
 		name: "Photo Essays",
 		slug: "photo-essays",
 		description: "Visual storytelling from around Berkeley.",
-		homepageOrder: 5,
+		homepageOrder: 6,
 	},
 	{
 		name: "Editorial Cartoons",
@@ -57,6 +57,6 @@ export const sections: Section[] = [
 		name: "Fiction",
 		slug: "fiction",
 		description: "Short stories and creative writing.",
-		homepageOrder: 7,
+		homepageOrder: 2,
 	},
 ];

@@ -1,22 +1,21 @@
 /**
  * Global, site-wide styling.
  *
- * Font URLs below are absolute from the deployed root, so they must include the
- * Astro `base` ("/stacks-magazine"). Keep this prefix in sync with
- * `base` in astro.config.mjs — plain CSS can't read import.meta.env.BASE_URL.
+ * Font URLs below are relative to src/assets/fonts, so Vite bundles them and
+ * prefixes the Astro `base` automatically. Don't move them back to public/.
  */
 @font-face {
 	font-family: "JMHTypewriter";
 	src:
-		url("/stacks-magazine/fonts/JMHTypewriter.ttf") format("truetype"),
-		url("/stacks-magazine/fonts/JMHTypewriter.otf") format("opentype");
+		url("../assets/fonts/JMHTypewriter.ttf") format("truetype"),
+		url("../assets/fonts/JMHTypewriter.otf") format("opentype");
 	font-weight: normal;
 	font-style: normal;
 	font-display: swap;
 }
 @font-face {
 	font-family: "GillSansNova-CnBold";
-	src: url("/stacks-magazine/fonts/GillSansNova-CnBold.ttf") format("truetype");
+	src: url("../assets/fonts/GillSansNova-CnBold.ttf") format("truetype");
 	font-weight: normal;
 	font-style: normal;
 	font-display: swap;

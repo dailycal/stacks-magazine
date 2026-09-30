@@ -1,4 +1,4 @@
-import type { ImageMetadata } from "astro";
+import { existsSync } from "node:fs";
 import { getCollection, type CollectionEntry } from "astro:content";
 import { issues, type Issue } from "../config/issues";
 import { sections } from "../config/sections";
@@ -236,20 +236,13 @@ export function getCurrentIssue(articleIssues: string[]): Issue {
   return meta;
 }
 
-// Every cover image under src/assets/covers, glob-imported eagerly since
-// Vite needs a static-ish pattern to bundle these at build time.
-const coverImages = import.meta.glob<{ default: ImageMetadata }>(
-  "/src/assets/covers/*.{png,jpg,jpeg,webp}",
-  { eager: true },
-);
-
 /**
- * Resolves an issue's cover image (its `cover` field, a src/assets-relative
- * path) to the bundled asset. Shared by IssueCoverArt.astro (rendering the
- * cover) and SEO.astro (the default social share image).
+ * Resolves an issue's cover image (its `cover` field, a site-root path to a
+ * file in public/). Shared by IssueCoverArt.astro (rendering the cover) and
+ * SEO.astro (the default social share image).
  * @param issue The issue whose cover to resolve.
- * @returns The cover's ImageMetadata, or undefined if no file matches.
+ * @returns The cover's site-root path, or undefined if public/ has no such file.
  */
-export function resolveIssueCoverImage(issue: Issue): ImageMetadata | undefined {
-  return coverImages[`/src/assets/${issue.cover}`]?.default;
+export function resolveIssueCoverImage(issue: Issue): string | undefined {
+  return existsSync(`public${issue.cover}`) ? issue.cover : undefined;
 }

@@ -56,7 +56,7 @@ const articles = defineCollection({
 
 /**
  * Editorial cartoons: one JSON file per cartoon in ./src/content/cartoons,
- * with its image at src/assets/images/cartoons/<slug>.<ext>. The slug, the
+ * with its image at public/assets/images/cartoons/<slug>.<ext>. The slug, the
  * JSON file name and the image name must all match; that's verified at build
  * time in src/lib/cartoons.ts.
  */

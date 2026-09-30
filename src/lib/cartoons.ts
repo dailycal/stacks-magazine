@@ -1,4 +1,4 @@
-import type { ImageMetadata } from "astro";
+import { readdirSync } from "node:fs";
 import { getCollection } from "astro:content";
 import { withBase } from "./path";
 
@@ -7,18 +7,17 @@ const CARTOONS_PATH = "/sections/editorial-cartoons";
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-// Every cartoon image, glob-imported eagerly so Vite bundles them.
-const cartoonImages = import.meta.glob<{ default: ImageMetadata }>(
-  "/src/assets/images/cartoons/*.{png,jpg,jpeg,webp}",
-  { eager: true },
-);
+// Cartoon images are public/ files, referenced by their site-root paths.
+const CARTOON_IMAGES_DIR = "/assets/images/cartoons";
+const CARTOON_IMAGE_EXTENSIONS = /\.(avif|png|jpe?g|webp)$/i;
 
 export interface Cartoon {
   slug: string;
   title: string;
   author: string;
   date: Date;
-  image: ImageMetadata;
+  /** Site-root path to the image in public/. */
+  image: string;
 }
 
 /** A path's file name without its directory or extension. */
@@ -46,13 +45,17 @@ export async function getAllCartoons(): Promise<Cartoon[]> {
   const entries = await getCollection("cartoons");
   const problems: string[] = [];
 
-  const imagesBySlug = new Map<string, ImageMetadata>();
-  for (const [path, module] of Object.entries(cartoonImages)) {
+  const imagesBySlug = new Map<string, string>();
+  const imageFiles = readdirSync(`public${CARTOON_IMAGES_DIR}`).filter((file) =>
+    CARTOON_IMAGE_EXTENSIONS.test(file),
+  );
+  for (const file of imageFiles) {
+    const path = `${CARTOON_IMAGES_DIR}/${file}`;
     const name = baseName(path);
     if (imagesBySlug.has(name)) {
       problems.push(`Two images share the name "${name}" (${path}).`);
     }
-    imagesBySlug.set(name, module.default);
+    imagesBySlug.set(name, path);
   }
 
   const cartoons: Cartoon[] = [];
@@ -70,7 +73,7 @@ export async function getAllCartoons(): Promise<Cartoon[]> {
     const image = imagesBySlug.get(slug);
     if (!image) {
       problems.push(
-        `${where}: no image named "${slug}" in src/assets/images/cartoons (png, jpg, jpeg or webp).`,
+        `${where}: no image named "${slug}" in public/assets/images/cartoons (avif, png, jpg, jpeg or webp).`,
       );
       continue;
     }
@@ -80,7 +83,7 @@ export async function getAllCartoons(): Promise<Cartoon[]> {
   const slugs = new Set(entries.map((entry) => entry.data.slug));
   for (const name of imagesBySlug.keys()) {
     if (!slugs.has(name)) {
-      problems.push(`src/assets/images/cartoons/${name}.*: no matching src/content/cartoons/${name}.json.`);
+      problems.push(`public/assets/images/cartoons/${name}.*: no matching src/content/cartoons/${name}.json.`);
     }
   }
 

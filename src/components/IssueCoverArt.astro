@@ -2,9 +2,9 @@
 /**
  * Cover art for an issue, or a placeholder if no image available.
  */
-import { Image } from "astro:assets";
 import type { Issue } from "../config/issues";
 import { resolveIssueCoverImage } from "../lib/issues";
+import SmartImage from "./SmartImage.astro";
 
 interface Props {
 	issue: Issue;
@@ -16,13 +16,13 @@ const { issue, dateLabel } = Astro.props;
 const coverImage = resolveIssueCoverImage(issue);
 
 if (!coverImage) {
-	console.warn(`[IssueCoverArt] No cover image found at /src/assets/${issue.cover}.`);
+	console.warn(`[IssueCoverArt] No cover image found at public${issue.cover}.`);
 }
 ---
 
 {
 	coverImage ? (
-		<Image src={coverImage} alt={`${issue.issue} cover`} />
+		<SmartImage src={coverImage} alt={`${issue.issue} cover`} />
 	) : (
 		<div class="issue-cover-placeholder">
 			<span class="issue-cover-placeholder-issue">{issue.issue}</span>

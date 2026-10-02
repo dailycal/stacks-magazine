@@ -1,0 +1,38 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import { withBase } from "../lib/path";
+import "../styles/section-page.css";
+---
+
+<PageLayout
+  title="Page Not Found — Stacks Magazine"
+  description="The page you're looking for couldn't be found."
+  noindex
+>
+  <div class="site-main">
+    {/* Header */}
+    <header class="section-header">
+      <h1>404: Lost in the <i>Stacks</i></h1>
+      <p>The page you're looking for could not be found.</p>
+    </header>
+
+    {/* Links to other pages */}
+    <nav class="not-found-links" aria-label="Where to go instead">
+      <a href={withBase("/")}>Home</a>
+      <a href={withBase("/issues")}>Issues</a>
+      <a href={withBase("/about")}>About</a>
+    </nav>
+  </div>
+</PageLayout>
+
+<style>
+  .not-found-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    font-family: var(--font-sans);
+    font-size: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+</style>

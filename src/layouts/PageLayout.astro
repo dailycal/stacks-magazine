@@ -81,46 +81,62 @@ const navLinksRight: NavLink[] = [
 <!doctype html>
 <html lang="en">
   {/* Head Metadata */}
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="generator" content={Astro.generator} />
-  <link rel="icon" type="image/png" href={withBase("/favicon.png")} />
-  <link rel="icon" href={withBase("/favicon.ico")} />
-  {
-    showIntroSpin && (
-      // is:inline: this must run synchronously while <head> is still parsing,
-      // before the overlay below ever paints, or a repeat visit would flash
-      // it before this hides it.
-      <script is:inline>
-        (function () {
-          try {
-            if (sessionStorage.getItem("stacksIntroSpinShown")) {
-              document.documentElement.classList.add("skip-intro-spin");
-            }
-          } catch (e) {}
-        })();
-      </script>
-    )
-  }
-  {
-    includeSeo ? (
-      <SEO
-        title={title}
-        headline={headline}
-        description={description}
-        image={image}
-        imageAlt={imageAlt}
-        type={seoType}
-        publishedTime={publishedTime}
-        modifiedTime={modifiedTime}
-        authors={authors}
-        noindex={noindex}
-        keywords={keywords}
-      />
-    ) : (
-      <title>{title}</title>
-    )
-  }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/png" href={withBase("/favicon.png")} />
+    <link rel="icon" href={withBase("/favicon.ico")} />
+    {
+      showIntroSpin && (
+        // is:inline: this must run synchronously while <head> is still parsing,
+        // before the overlay below ever paints, or a repeat visit would flash
+        // it before this hides it.
+        <script is:inline>
+          (function () {
+            try {
+              if (sessionStorage.getItem("stacksIntroSpinShown")) {
+                document.documentElement.classList.add("skip-intro-spin");
+              }
+            } catch (e) {}
+          })();
+        </script>
+      )
+    }
+    {
+      includeSeo ? (
+        <SEO
+          title={title}
+          headline={headline}
+          description={description}
+          image={image}
+          imageAlt={imageAlt}
+          type={seoType}
+          publishedTime={publishedTime}
+          modifiedTime={modifiedTime}
+          authors={authors}
+          noindex={noindex}
+          keywords={keywords}
+        />
+      ) : (
+        <title>{title}</title>
+      )
+    }
+
+    {/* Google tag (gtag.js) */}
+    {import.meta.env.PROD && (
+      <>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-VY3M2WNK9V"></script>
+        <script is:inline>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-VY3M2WNK9V');
+        </script>
+      </>
+    )}
+  </head>
   <body>
     {
       showIntroSpin && (

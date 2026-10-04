@@ -43,6 +43,22 @@ export function parseIssueDirName(dirName: string): string {
 // at /articles/<slug> instead of /issues/<issue>/<slug>.
 const NO_ISSUE_DIR = "no-issue";
 
+/**
+ * Throws if a no-issue article's slug doesn't start with its publish date as
+ * yyyy-mm-dd, e.g. "2026-10-04-catholic" for an article published 2026-10-04.
+ * @param slug The article's slug.
+ * @param publishDate The article's publishDate.
+ */
+function assertNoIssueSlug(slug: string, publishDate: Date) {
+  const date = publishDate.toISOString().slice(0, 10);
+  if (!slug.startsWith(`${date}-`)) {
+    throw new Error(
+      `Invalid slug "${slug}" in src/content/${NO_ISSUE_DIR}: expected it to start ` +
+      `with its publishDate as "yyyy-mm-dd-", e.g. "${date}-${slug}".`,
+    );
+  }
+}
+
 export interface ArticleWithSlugs {
   // Undefined for articles in the no-issue folder.
   issue: string | undefined;
@@ -70,6 +86,7 @@ export async function getAllArticles(): Promise<ArticleWithSlugs[]> {
   return entries.map((entry) => {
     const [dirName, slug] = entry.id.split("/");
     const issue = dirName === NO_ISSUE_DIR ? undefined : parseIssueDirName(dirName);
+    if (!issue) assertNoIssueSlug(slug, entry.data.publishDate);
     return { issue, slug, entry };
   });
 }

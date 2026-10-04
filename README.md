@@ -24,7 +24,7 @@ Previously, this site was served from `https://dailycal.github.io/stacks-magazin
 Every article is one `.mdx` file (frontmatter + body) in `src/content/`, in a folder that decides which issue it belongs to:
 
 - **Part of an issue:** `src/content/issue-<month>-<year>/<slug>.mdx`, e.g. `src/content/issue-april-2026/my-article.mdx`. The folder name must be `issue-` followed by a full lowercase month name and a 4-digit year (e.g. `issue-april-2026`). This also has to be a folder that already has an entry in `src/config/issues.ts` (see [Adding an issue](#adding-an-issue) below). The article is served at `/issues/<month>-<year>/<slug>`. If the above conditions are not met, the build will fail.
-- **Not part of an issue:** `src/content/no-issue/<slug>.mdx`. Served at `/articles/<slug>` instead.
+- **Not part of an issue:** `src/content/no-issue/<yyyy-mm-dd>-<slug>.mdx`, e.g. `src/content/no-issue/2026-10-04-catholic.mdx`. The file name must start with the article's `publishDate` in `yyyy-mm-dd` format, or the build will fail. Its images go in `public/assets/images/no-issue/<yyyy-mm-dd>-<slug>/`. Served at `/articles/<yyyy-mm-dd>-<slug>` instead.
 
 The article's `<slug>` becomes its URL segment, so keep it URL-safe (lowercase, hyphens).
 

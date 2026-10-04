@@ -36,4 +36,7 @@ export const legacyRedirects: Record<string, string> = {
 	"/issue-april-2026/oakland.html": "/issues/april-2026/oakland",
 	"/issue-april-2026/republicans.html": "/issues/april-2026/republicans",
 	"/issue-april-2026/sound.html": "/issues/april-2026/sound",
+	// No-issue articles from before their slugs had to start with the date
+	"/articles/paint": "/articles/2026-09-29-paint",
+	"/articles/wynd": "/articles/2026-09-29-wynd",
 };

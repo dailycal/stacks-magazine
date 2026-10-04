@@ -31,6 +31,9 @@ interface Props {
   noindex?: boolean;
   keywords?: string[];
   includeSeo?: boolean;
+  // GA4 content group for this page (an article's section), so pageviews can
+  // be compared by section in Google Analytics.
+  contentGroup?: string;
   // Plays the old site's once-per-session spin loader over the page before
   // it fades in (see index.astro, the only page that sets this).
   showIntroSpin?: boolean;
@@ -49,8 +52,15 @@ const {
   noindex,
   keywords,
   includeSeo = true,
+  contentGroup,
   showIntroSpin = false,
 } = Astro.props;
+
+// Extra GA4 config for this page, inlined into the gtag snippet below
+// ("<" escaped so a value can't close the <script>).
+const gaConfig = JSON.stringify(
+  contentGroup ? { content_group: contentGroup } : {},
+).replace(/</g, "\\u003c");
 
 // Navigation link interface
 interface NavLink {
@@ -127,13 +137,13 @@ const navLinksRight: NavLink[] = [
     {import.meta.env.PROD && (
       <>
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-VY3M2WNK9V"></script>
-        <script is:inline>
+        <script is:inline set:html={`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
 
-          gtag('config', 'G-VY3M2WNK9V');
-        </script>
+          gtag('config', 'G-VY3M2WNK9V', ${gaConfig});
+        `} />
       </>
     )}
   </head>

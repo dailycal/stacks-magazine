@@ -3,60 +3,61 @@
 // that article frontmatter is validated against (see src/content.config.ts).
 
 export interface Section {
-	name: string;
-	slug: string;
-	description: string;
-	// Position of this section in the homepage's "Latest" article list
-	// (ascending). Use -1 to leave the section off the homepage.
-	homepageOrder: number;
-	// Set when the section has its own pages under /sections/<slug>, so the
-	// generic section page (src/pages/sections/[section].astro) skips it.
-	customPage?: boolean;
+  name: string;
+  slug: string;
+  description: string;
+  // Position of this section in the homepage's "Latest" article list
+  // (ascending). Use -1 to leave the section off the homepage.
+  homepageOrder: number;
+  // Set when the section has its own pages under /sections/<slug>, so the
+  // generic section page (src/pages/sections/[section].astro) skips it.
+  customPage?: boolean;
 }
 
 export const sections: Section[] = [
-	{
-		name: "Headlines",
-		slug: "headlines",
-		description: "Longform commentary and news analysis.",
-		homepageOrder: 1,
-	},
-	{
-		name: "Essays",
-		slug: "essays",
-		description: "Personal narratives and essays.",
-		homepageOrder: 3,
-	},
-	{
-		name: "Features",
-		slug: "features",
-		description: "Local arts and culture.",
-		homepageOrder: 4,
-	},
-	{
-		name: "From the Stacks",
-		slug: "from-the-stacks",
-		description:
-			"Metaphorically dig through archived issues of the Daily Cal to get a glimpse of life in Berkeley, from noteworthy headlines to everyday reporting that has been otherwise lost in the stacks.",
-		homepageOrder: 5,
-	},
-	{
-		name: "Photo Essays",
-		slug: "photo-essays",
-		description: "Visual storytelling from around Berkeley.",
-		homepageOrder: 6,
-	},
-	{
-		name: "Editorial Cartoons",
-		slug: "editorial-cartoons",
-		description: "Illustrated commentary on campus and city life.",
-		homepageOrder: -1,
-		customPage: true,
-	},
-	{
-		name: "Fiction",
-		slug: "fiction",
-		description: "Short stories and creative writing.",
-		homepageOrder: 2,
-	},
+  {
+    name: "Headlines",
+    slug: "headlines",
+    description: "Longform commentary and news analysis.",
+    homepageOrder: 1,
+  },
+  {
+    name: "Features",
+    slug: "features",
+    description: "Local arts and culture.",
+    homepageOrder: 2,
+  },
+  {
+    name: "Fiction",
+    slug: "fiction",
+    description: "Short stories and creative writing.",
+    homepageOrder: 3,
+  },
+  {
+    name: "Essays",
+    slug: "essays",
+    description: "Personal narratives and essays.",
+    homepageOrder: 4,
+  },
+  {
+    name: "From the Stacks",
+    slug: "from-the-stacks",
+    description:
+      "Metaphorically dig through archived issues of the Daily Cal to get a glimpse of life in Berkeley, from noteworthy headlines to everyday reporting that has been otherwise lost in the stacks.",
+    homepageOrder: 5,
+  },
+  {
+    name: "Photo Essays",
+    slug: "photo-essays",
+    description: "Visual storytelling from around Berkeley.",
+    homepageOrder: 6,
+  },
+  {
+    name: "Editorial Cartoons",
+    slug: "editorial-cartoons",
+    description: "Illustrated commentary on campus and city life.",
+    homepageOrder: -1,
+    customPage: true,
+  },
 ];
+

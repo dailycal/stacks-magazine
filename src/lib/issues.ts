@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import { getCollection, type CollectionEntry } from "astro:content";
-import { issues, type Issue } from "../config/issues";
+import { z } from "astro/zod";
+import issueData from "../content/issues.json";
 import { sections } from "../config/sections";
 import { withBase } from "./path";
 
@@ -38,6 +39,54 @@ export function parseIssueDirName(dirName: string): string {
   }
   return dirName.slice("issue-".length);
 }
+
+// Per-issue metadata, defined in src/content/issues.json. The homepage renders
+// the most recent entry's cover and the topbar its `issue` label. "Most
+// recent" is decided by `date`, not array order, but keep the file
+// newest-first for readability.
+const issueSchema = z.strictObject({
+  // Display label, e.g. "Issue II".
+  issue: z.string().min(1),
+  // Issue slug, matching its content folder minus "issue-", e.g. "april-2026".
+  date: z.string().regex(new RegExp(`^(?:${MONTHS.join("|")})-\\d{4}$`), {
+    message: 'expected "<full lowercase month>-<4-digit year>", e.g. "april-2026"',
+  }),
+  // Site-root path to the cover image in public/.
+  cover: z.string().regex(/^\/(?!\/)/, { message: 'expected a site-root path, e.g. "/assets/covers/x.avif"' }),
+  // Full URL or site-root path to the issue PDF, or "" if there isn't one.
+  pdf: z.union([z.literal(""), z.url(), z.string().regex(/^\/(?!\/)/)]),
+  // "" if uncredited.
+  coverAuthor: z.string(),
+});
+
+export type Issue = z.infer<typeof issueSchema>;
+
+const issuesSchema = z
+  .array(issueSchema)
+  .min(1)
+  .superRefine((entries, ctx) => {
+    const seen = new Set<string>();
+    entries.forEach((entry, index) => {
+      if (seen.has(entry.date)) {
+        ctx.addIssue({ code: "custom", path: [index, "date"], message: `duplicate date "${entry.date}"` });
+      }
+      seen.add(entry.date);
+    });
+  });
+
+function loadIssues(): Issue[] {
+  const result = issuesSchema.safeParse(issueData);
+  if (!result.success) {
+    throw new Error(`Invalid src/content/issues.json:\n${z.prettifyError(result.error)}`);
+  }
+  // Add base path to pdf paths
+  return result.data.map((issue) => ({
+    ...issue,
+    pdf: issue.pdf ? withBase(issue.pdf) : "",
+  }));
+}
+
+export const issues: Issue[] = loadIssues();
 
 // Content folder for articles that aren't part of any issue. They're served
 // at /articles/<slug> instead of /issues/<issue>/<slug>.
@@ -207,9 +256,6 @@ export function formatIssueDate(issue: string): string {
  * @returns The newest issue metadata entry.
  */
 export function getMostRecentIssueMeta(): Issue {
-  if (issues.length === 0) {
-    throw new Error("config/issues.ts: `issues` is empty.");
-  }
   return [...issues]
     .sort((a, b) => issueSlugToDate(b.date).getTime() - issueSlugToDate(a.date).getTime())[0];
 }
@@ -235,7 +281,7 @@ export function mostRecentIssueFolder(articleIssues: string[]): string {
  * newest `issues` config entry must have the same `date` as the newest issue
  * folder in src/content, otherwise this throws. Call this from a page that
  * always builds (e.g. the homepage) so a content folder can't ship without its
- * issues.ts entry.
+ * issues.json entry.
  * @param articleIssues Issue slugs taken from article folders (e.g. from getAllArticles()).
  * @returns The newest issue metadata entry.
  */
@@ -244,9 +290,9 @@ export function getCurrentIssue(articleIssues: string[]): Issue {
   const folder = mostRecentIssueFolder(articleIssues);
   if (meta.date !== folder) {
     throw new Error(
-      `Issue mismatch: the most recent entry in src/config/issues.ts is ` +
+      `Issue mismatch: the most recent entry in src/content/issues.json is ` +
       `"${meta.date}", but the most recent issue folder in src/content is ` +
-      `"issue-${folder}". Add or correct the issues.ts entry so its \`date\` ` +
+      `"issue-${folder}". Add or correct the issues.json entry so its \`date\` ` +
       `matches the newest content folder.`,
     );
   }

@@ -4,11 +4,11 @@ import IssueSpread from "../../../components/IssueSpread.astro";
 import "../../../styles/issue-cover.css";
 import "../../../styles/issue-spread.css";
 import "../../../styles/issue-page.css";
-import { issues } from "../../../config/issues";
+import { issues } from "../../../lib/issues";
 import { getAllArticles, buildTableOfContents, formatIssueDate } from "../../../lib/issues";
 
 /**
- * Gets the static paths for every issue in src/config/issues.ts, each with
+ * Gets the static paths for every issue in src/content/issues.json, each with
  * its own table of contents built from that issue's articles.
  * @returns An array of objects containing the issue param and its metadata/TOC props.
  */

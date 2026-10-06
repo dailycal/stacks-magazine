@@ -5,7 +5,7 @@ import IssueSpread from "../../components/IssueSpread.astro";
 import "../../styles/issue-cover.css";
 import "../../styles/issue-spread.css";
 import "../../styles/issues-index.css";
-import { issues } from "../../config/issues";
+import { issues } from "../../lib/issues";
 import {
 	buildTableOfContents,
 	formatIssueDate,
@@ -16,7 +16,7 @@ import {
 import { withBase } from "../../lib/path";
 
 // The latest issue gets a full spread above the grid, so the grid only lists
-// the ones before it, newest first (regardless of issues.ts array order).
+// the ones before it, newest first (regardless of issues.json array order).
 const latestIssue = getMostRecentIssueMeta();
 const allArticles = await getAllArticles();
 const latestTableOfContents = buildTableOfContents(latestIssue.date, allArticles);

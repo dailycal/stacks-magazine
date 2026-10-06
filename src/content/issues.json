@@ -1,0 +1,23 @@
+[
+	{
+		"issue": "Issue II",
+		"date": "april-2026",
+		"cover": "/assets/covers/issue-april-2026.jpg",
+		"pdf": "https://media.dailycal.org/stacks-magazine/issues/Issue_2.pdf",
+		"coverAuthor": "Milan Rafaelov"
+	},
+	{
+		"issue": "Issue II",
+		"date": "february-2026",
+		"cover": "/assets/covers/issue-feb-2026.jpg",
+		"pdf": "",
+		"coverAuthor": "Chloe Kim"
+	},
+	{
+		"issue": "Issue I",
+		"date": "december-2025",
+		"cover": "/assets/covers/issue-dec-2025.jpg",
+		"pdf": "https://media.dailycal.org/stacks-magazine/issues/Issue_1.pdf",
+		"coverAuthor": ""
+	}
+]

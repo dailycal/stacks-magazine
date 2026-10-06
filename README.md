@@ -23,7 +23,7 @@ Previously, this site was served from `https://dailycal.github.io/stacks-magazin
 
 Every article is one `.mdx` file (frontmatter + body) in `src/content/`, in a folder that decides which issue it belongs to:
 
-- **Part of an issue:** `src/content/issue-<month>-<year>/<slug>.mdx`, e.g. `src/content/issue-april-2026/my-article.mdx`. The folder name must be `issue-` followed by a full lowercase month name and a 4-digit year (e.g. `issue-april-2026`). This also has to be a folder that already has an entry in `src/config/issues.ts` (see [Adding an issue](#adding-an-issue) below). The article is served at `/issues/<month>-<year>/<slug>`. If the above conditions are not met, the build will fail.
+- **Part of an issue:** `src/content/issue-<month>-<year>/<slug>.mdx`, e.g. `src/content/issue-april-2026/my-article.mdx`. The folder name must be `issue-` followed by a full lowercase month name and a 4-digit year (e.g. `issue-april-2026`). This also has to be a folder that already has an entry in `src/content/issues.json` (see [Adding an issue](#adding-an-issue) below). The article is served at `/issues/<month>-<year>/<slug>`. If the above conditions are not met, the build will fail.
 - **Not part of an issue:** `src/content/no-issue/<yyyy-mm-dd>-<slug>.mdx`, e.g. `src/content/no-issue/2026-10-04-catholic.mdx`. The file name must start with the article's `publishDate` in `yyyy-mm-dd` format, or the build will fail. Its images go in `public/assets/images/no-issue/<yyyy-mm-dd>-<slug>/`. Served at `/articles/<yyyy-mm-dd>-<slug>` instead.
 
 The article's `<slug>` becomes its URL segment, so keep it URL-safe (lowercase, hyphens).
@@ -105,21 +105,26 @@ Almost all image formats are supported, except for raw camera photo formats (exp
 ## Adding an issue
 
 1. Add the issue's cover image to `public/assets/covers/` (and [optimize](#optimizing-images) it).
-2. Add an entry to `src/config/issues.ts`:
-   ```ts
+2. Add an entry to `src/content/issues.json` (it's validated at build time, so a typo or missing field fails the build):
+   ```json
    {
-     issue: "Issue III",                         // display label, e.g. "Issue III"
-     date: "may-2026",                            // must match a src/content/issue-may-2026 folder
-     cover: "/assets/covers/issue-may-2026.avif",  // site-root path to a file in public/
-     pdf: "https://media.dailycal.org/.../Issue_3.pdf", // print PDF URL, or "" if digital issue
-     coverAuthor: "Cover Artist Name",             // or "" if unknown
+     "issue": "Issue III",
+     "date": "may-2026",
+     "cover": "/assets/covers/issue-may-2026.avif",
+     "pdf": "https://media.dailycal.org/.../Issue_3.pdf",
+     "coverAuthor": "Cover Artist Name"
    }
    ```
+   - `issue`: display label, e.g. "Issue III"
+   - `date`: must match a `src/content/issue-may-2026` folder
+   - `cover`: site-root path to a file in `public/`
+   - `pdf`: print PDF URL, or `""` if digital issue
+   - `coverAuthor`: or `""` if unknown
 3. Add the `src/content/issue-may-2026/` folder and its articles (see [Adding an article](#adding-an-article)).
 
 For the `media.dailycal.org/...` hosting for PDFs, access the R2 bucket from the Cloudflare dashboard.
 
-The **newest** entry in `issues.ts` (by `date`) must correspond to the newest `issue-*` folder that actually has articles in it, the homepage build throws a clear error if they don't match, so a new issue can't accidentally ship without its `issues.ts` entry (or vice versa).
+The **newest** entry in `issues.json` (by `date`) must correspond to the newest `issue-*` folder that actually has articles in it, the homepage build throws a clear error if they don't match, so a new issue can't accidentally ship without its `issues.json` entry (or vice versa).
 
 ## Adding a cartoon
 
@@ -143,7 +148,7 @@ Cartoons are ordered by `date`; the newest one is what `/sections/editorial-cart
 ## Site configuration (`src/config/`)
 
 - **`sections.ts`** — the magazine's sections (Headlines, Essays, etc.). Each has a `name` (must match article frontmatter exactly), `slug` (its URL, `/sections/<slug>`), `description`, and `homepageOrder` (position in the homepage's "Latest" list; `-1` leaves it off the homepage entirely). Add `customPage: true` for a section that isn't a plain article listing (like Editorial Cartoons) — this excludes it from the generic section-listing page and from being usable as an article's `section`.
-- **`issues.ts`** — see [Adding an issue](#adding-an-issue) above.
+- **`issues.json`** — see [Adding an issue](#adding-an-issue) above.
 - **`about.ts`** — the About page's masthead (Staff / Editors / Creative / Credits). Each section is a list of `{ role, people: [{ name, url? }] }` entries; `url` is optional and links the person's name.
 
 ## Other configurations

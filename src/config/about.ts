@@ -84,10 +84,7 @@ export const about: {
       {
         role: "Website by",
         people: [
-          {
-            name: "Joever Orillosa",
-            url: "https://www.ocf.berkeley.edu/~joever/portfoli0_o",
-          },
+          { name: "Joever Orillosa" },
           { name: "Siddhartha Chatterjee" },
           {
             name: "Brendan Raykoff",

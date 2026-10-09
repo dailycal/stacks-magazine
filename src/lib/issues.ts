@@ -52,7 +52,7 @@ const issueSchema = z.strictObject({
     message: 'expected "<full lowercase month>-<4-digit year>", e.g. "april-2026"',
   }),
   // Site-root path to the cover image in public/.
-  cover: z.string().regex(/^\/(?!\/)/, { message: 'expected a site-root path, e.g. "/assets/covers/x.avif"' }),
+  cover: z.string().regex(/^\/(?!\/)/, { message: 'expected a site-root path, e.g. "/assets/covers/x.jpg"' }),
   // Full URL or site-root path to the issue PDF, or "" if there isn't one.
   pdf: z.union([z.literal(""), z.url(), z.string().regex(/^\/(?!\/)/)]),
   // "" if uncredited.

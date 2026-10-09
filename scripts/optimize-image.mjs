@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Image optimization pipeline.
- * Converts one or more images in place to web-optimized AVIF, deleting the 
+ * Converts one or more images in place to web-optimized JPEG, deleting the 
  * original unless --keep-original is given.
  *
  * Usage:
@@ -20,9 +20,13 @@ import sharp from "sharp";
 // Long edge size limit. 
 const MAX_DIMENSION = 2560;
 
-// AVIF compression quality.
-const AVIF_QUALITY = 50;
-const AVIF_EFFORT = 9;
+// JPEG compression quality (encoded with mozjpeg). Chroma is kept at full
+// resolution (4:4:4) so colored edges in illustrations and text stay crisp.
+const JPEG_QUALITY = 85;
+
+// JPEG has no transparency, so transparent pixels are flattened onto the
+// site's white page background.
+const FLATTEN_BACKGROUND = "#ffffff";
 
 // Raw camera formats aren't decodable, so we will throw specifically for these.
 const KNOWN_RAW_EXTENSIONS = new Set([
@@ -77,9 +81,9 @@ async function optimizeOne(inputPath, { keepOriginal }) {
   const originalStat = await stat(resolvedInput);
   const dir = path.dirname(resolvedInput);
   const base = path.basename(resolvedInput, ext);
-  const outputPath = path.join(dir, `${base}.avif`);
+  const outputPath = path.join(dir, `${base}.jpg`);
 
-  const tempPath = path.join(dir, `.${base}.${randomBytes(4).toString("hex")}.tmp.avif`);
+  const tempPath = path.join(dir, `.${base}.${randomBytes(4).toString("hex")}.tmp.jpg`);
 
   await sharp(resolvedInput, { failOn: "none" })
     .rotate()
@@ -89,7 +93,8 @@ async function optimizeOne(inputPath, { keepOriginal }) {
       fit: "inside",
       withoutEnlargement: true,
     })
-    .avif({ quality: AVIF_QUALITY, effort: AVIF_EFFORT })
+    .flatten({ background: FLATTEN_BACKGROUND })
+    .jpeg({ quality: JPEG_QUALITY, mozjpeg: true, chromaSubsampling: "4:4:4" })
     .toFile(tempPath);
 
   const newStat = await stat(tempPath);

@@ -40,7 +40,7 @@ The article's `<slug>` becomes its URL segment, so keep it URL-safe (lowercase, 
 | `section` | Must exactly match a `name` in `src/config/sections.ts`. A section with `customPage: true` (currently just Editorial Cartoons) can't be used here, the build throws. | Yes |
 | `issue` | The issue slug it belongs to, should match the folder it lives in. | No |
 | `staffAttribution` | `true` adds "\| Staff" after the byline. Default `false`. | No |
-| `featuredImage` | The header/card image: either a site-root path to a file in `public/` (e.g. `"/assets/images/issue-april-2026/my-article/cover.avif"`) or a full external URL. | No |
+| `featuredImage` | The header/card image: either a site-root path to a file in `public/` (e.g. `"/assets/images/issue-april-2026/my-article/cover.jpg"`) or a full external URL. | No |
 | `featuredImageAlt` | Alt text for `featuredImage`. | No |
 | `featuredImageCaption` | Caption/credit shown under `featuredImage` on the article page. | No |
 | `skipFeaturedImage` | `true` hides `featuredImage` on the article page itself (it still shows on cards and in social previews). Use this when the article body already opens with that same image, so it doesn't show twice. Default `false`. | No |
@@ -56,7 +56,7 @@ excerpt: "One or two sentences for cards and search results."
 authors: ["Jane Doe"]
 publishDate: 2026-05-01
 section: "Essays"
-featuredImage: "/assets/images/issue-april-2026/my-article/cover.avif"
+featuredImage: "/assets/images/issue-april-2026/my-article/cover.jpg"
 featuredImageAlt: "Description of the photo"
 featuredImageCaption: "Photo by Jane Doe"
 issue: "issue-april-2026" # optional
@@ -66,7 +66,7 @@ keywords: [] # optional
 ---
 
 import ArticleImage from "../../components/ArticleImage.astro";
-export const inlinePhoto = "/assets/images/issue-april-2026/my-article/inline.avif";
+export const inlinePhoto = "/assets/images/issue-april-2026/my-article/inline.jpg";
 
 The body is regular Markdown/MDX. Paragraphs, **bold**, *italics*, [links](https://dailycal.org), and `<ArticleImage>` for a photo inline in the text all work:
 
@@ -82,8 +82,8 @@ A few important components:
 ### Adding images
 
 Put an article's images in `public/assets/images/<same folder as the article>/<article-slug>/`, e.g. `public/assets/images/issue-april-2026/my-article/`, and reference them by their site-root path (without `public`):
-- `featuredImage` as a plain string in frontmatter: `featuredImage: "/assets/images/issue-april-2026/my-article/cover.avif"`, and
-- inline images as a constant at the top of the `.mdx` file (`export const inlinePhoto = "/assets/images/issue-april-2026/my-article/inline.avif";`), passed to `<ArticleImage src={inlinePhoto} ... />`.
+- `featuredImage` as a plain string in frontmatter: `featuredImage: "/assets/images/issue-april-2026/my-article/cover.jpg"`, and
+- inline images as a constant at the top of the `.mdx` file (`export const inlinePhoto = "/assets/images/issue-april-2026/my-article/inline.jpg";`), passed to `<ArticleImage src={inlinePhoto} ... />`.
 
 An external URL works too, as a plain string.
 
@@ -91,7 +91,7 @@ Run these through the [image optimization pipeline](#optimizing-images) before c
 
 ## Optimizing images
 
-`npm run optimize` converts an image to a web-optimized AVIF, in place: it replaces `<image>` with `<image-without-its-old-extension>.avif` in the same folder, deleting the original (unless `--keep-original` is given), and prints how much smaller it got.
+`npm run optimize` converts an image to a web-optimized JPEG, in place: it replaces `<image>` with `<image-without-its-old-extension>.jpg` in the same folder, deleting the original (unless `--keep-original` is given), and prints how much smaller it got. JPEG has no transparency, so any transparent areas are flattened onto white.
 
 ```bash
 npm run optimize -- public/assets/images/issue-april-2026/my-article/cover.jpg
@@ -110,7 +110,7 @@ Almost all image formats are supported, except for raw camera photo formats (exp
    {
      "issue": "Issue III",
      "date": "may-2026",
-     "cover": "/assets/covers/issue-may-2026.avif",
+     "cover": "/assets/covers/issue-may-2026.jpg",
      "pdf": "https://media.dailycal.org/.../Issue_3.pdf",
      "coverAuthor": "Cover Artist Name"
    }

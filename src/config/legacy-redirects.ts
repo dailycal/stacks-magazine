@@ -1,9 +1,22 @@
 /**
- * Old stacks.github.io repo article URLs, mapped to their new articles. Passed to
+ * Old stacks.github.io repo page URLs, mapped to their new pages. Passed to
  * Astro's `redirects` config in astro.config.mjs.
  */
 
 export const legacyRedirects: Record<string, string> = {
+	// Site pages
+	"/masthead.html": "/about",
+	"/issues.html": "/issues",
+	// Sections. Off the Record and Notes were renamed; their articles are now in
+	// Essays and Features respectively.
+	"/section-headlines.html": "/sections/headlines",
+	"/section-off.html": "/sections/essays",
+	"/section-notes.html": "/sections/features",
+	"/section-from-the-stacks.html": "/sections/from-the-stacks",
+	"/section-photo-essay.html": "/sections/photo-essays",
+	"/section-editorial-cartoons.html": "/sections/editorial-cartoons",
+	// Upcoming Events has no new counterpart
+	"/section-upcoming-events.html": "/sections",
 	// December 2025 issue (served from the site root as a-<slug>.html)
 	"/a-agentic-ai-summit.html": "/issues/december-2025/agentic-ai-summit",
 	"/a-aipac.html": "/issues/december-2025/aipac",

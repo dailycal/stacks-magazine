@@ -11,7 +11,7 @@ export default defineConfig({
   site: 'https://stacksmagazine.org',
   base: '/',
   redirects: {
-    // Old stacks.github.io article URLs -> their new articles
+    // Old stacks.github.io page URLs -> their new pages
     ...legacyRedirects,
   },
   integrations: [

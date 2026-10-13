@@ -5,7 +5,7 @@ import "../../../styles/issue-cover.css";
 import "../../../styles/issue-spread.css";
 import "../../../styles/issue-page.css";
 import { issues } from "../../../lib/issues";
-import { getAllArticles, buildTableOfContents, formatIssueDate } from "../../../lib/issues";
+import { getAllArticles, buildTableOfContents, formatIssueDate, resolveIssueCoverImage } from "../../../lib/issues";
 
 /**
  * Gets the static paths for every issue in src/content/issues.json, each with
@@ -28,8 +28,10 @@ const dateLabel = formatIssueDate(issueMeta.date);
 ---
 
 <PageLayout
-	title={`${issueMeta.issue} — Stacks Magazine`}
+	title={`${issueMeta.issue}, ${dateLabel} — Stacks Magazine`}
 	description={`Articles from ${issueMeta.issue}, ${dateLabel}.`}
+	image={resolveIssueCoverImage(issueMeta)}
+	imageAlt={`${issueMeta.issue}, ${dateLabel} cover`}
 >
 	<div class="site-main">
 		{/* Header */}

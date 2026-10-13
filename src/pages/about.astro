@@ -59,12 +59,12 @@ const mastheadSections = [
       {/* Masthead */}
       <div class="about-right">
         <header class="section-header">
-          <h1>Staff</h1>
+          <h2>Staff</h2>
         </header>
 
         {mastheadSections.map((section) => (
           <section class="masthead-section">
-            {section.heading && <h2>{section.heading}</h2>}
+            {section.heading && <h3>{section.heading}</h3>}
             {section.entries.map((entry) => (
               <p class="masthead-pair">
                 <span class="masthead-role">{entry.role}</span>:{" "}

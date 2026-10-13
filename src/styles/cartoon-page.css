@@ -47,7 +47,7 @@
 }
 .cartoon-title {
 	display: block;
-	margin-bottom: 4px;
+	margin: 0 0 4px;
 	font-size: 1.25rem;
 	font-weight: 700;
 }

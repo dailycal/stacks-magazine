@@ -7,7 +7,6 @@
 import type { ImageMetadata } from "astro";
 import { getMostRecentIssueMeta, resolveIssueCoverImage } from "../lib/issues";
 import { withBase } from "../lib/path";
-import stacksLogo from "../assets/site/stacks-logo.png";
 
 export interface Props {
   title: string;
@@ -79,7 +78,7 @@ const ogImage = imageSource ? toAbsoluteImage(imageSource) : undefined;
 const publisher = {
   "@type": "Organization",
   name: SITE_NAME,
-  logo: { "@type": "ImageObject", url: new URL(stacksLogo.src, site).href },
+  logo: { "@type": "ImageObject", url: new URL(withBase("/assets/site/stacks-logo.jpg"), site).href },
 };
 
 const structuredData =

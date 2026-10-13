@@ -1,12 +1,10 @@
 ---
 import type { ImageMetadata } from "astro";
-import { Image } from "astro:assets";
 import { getMostRecentIssueMeta } from "../lib/issues";
 import { withBase } from "../lib/path";
 import SEO from "../components/SEO.astro";
 import "../styles/global.css";
 import "../styles/page-layout.css";
-import stacksLogo from "../assets/site/stacks-logo.png";
 import footerBooks from "../assets/site/footer-books.png";
 import spiralStill from "../assets/site/spiral-still-1.png";
 import spiralAnim from "../assets/site/animations/spiral.gif";
@@ -173,7 +171,7 @@ const navLinksRight: NavLink[] = [
         {/* Center logo — absolutely positioned so it stays exactly centered
             regardless of how much content is in the two groups either side. */}
         <a class="nav-logo" href={withBase("/")} aria-label="Stacks">
-          <Image src={stacksLogo} alt="Stacks" width={220} loading="eager" />
+          <img src={withBase("/assets/site/stacks-logo.jpg")} alt="Stacks" width="220" height="65" loading="eager" decoding="async" />
         </a>
 
         {/* Right nav elements, packed toward the logo */}
@@ -223,7 +221,7 @@ const navLinksRight: NavLink[] = [
       <div class="mobile-bar">
         {/* Logo */}
         <a class="mobile-logo" href={withBase("/")} aria-label="Stacks">
-          <Image src={stacksLogo} alt="Stacks" width={220} loading="eager" />
+          <img src={withBase("/assets/site/stacks-logo.jpg")} alt="Stacks" width="220" height="65" loading="eager" decoding="async" />
         </a>
 
         {/* Hamburger menu */}

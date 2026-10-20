@@ -91,16 +91,14 @@ Run these through the [image optimization pipeline](#optimizing-images) before c
 
 ## Optimizing images
 
-`npm run optimize` converts an image to a web-optimized JPEG, in place: it replaces `<image>` with `<image-without-its-old-extension>.jpg` in the same folder, deleting the original (unless `--keep-original` is given), and prints how much smaller it got. JPEG has no transparency, so any transparent areas are flattened onto white.
+Open [stacksmagazine.org/editors/image-optimization](https://stacksmagazine.org/editors/image-optimization) (or `http://localhost:4321/editors/image-optimization` while `npm run dev` is running) and choose an image. Your browser converts it to a web-optimized JPEG on your own machine, without uploading it anywhere:
+- it's scaled down so its long edge is at most 2560px (never scaled up),
+- any transparent areas are flattened onto white, since JPEG has no transparency, and
+- it's compressed with mozjpeg at quality 85, keeping full-resolution color (4:4:4) so colored edges in illustrations and text stay crisp.
 
-```bash
-npm run optimize -- public/assets/images/issue-april-2026/my-article/cover.jpg
-npm run optimize -- path/to/one.jpg path/to/two.png --keep-original   # multiple files, keep originals
-```
+The page shows the old and new resolution and file size. Switch between Original and Optimized to compare the two, then download the optimized `.jpg` and put it in `public/assets/...` instead of the original.
 
-**The `--` is required.** Without it, flags and arguments get ingested by npm and not passed on to the script.
-
-Almost all image formats are supported, except for raw camera photo formats (export these to JPEG or PNG first). Do not optimize svg images, they are already optimized.
+Use Chrome or Safari: Firefox ignores some embedded color profiles, which shifts colors slightly. HEIC (iPhone photos) and TIFF files only open in Safari, and raw camera photo formats don't open anywhere (export these to JPEG or PNG first). Do not optimize svg images, they are already optimized.
 
 ## Adding an issue
 

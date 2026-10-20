@@ -17,6 +17,7 @@ const { entry } = Astro.props;
 const {
   title,
   subheadline,
+  excerpt,
   authors,
   publishDate,
   section,
@@ -57,7 +58,7 @@ const isoDate = publishDate.toISOString().slice(0, 10);
 <PageLayout
   title={`${title} — Stacks Magazine`}
   headline={title}
-  description={subheadline ?? title}
+  description={excerpt ?? subheadline ?? title}
   seoType="article"
   publishedTime={publishDate}
   authors={authors}
@@ -76,7 +77,7 @@ const isoDate = publishDate.toISOString().slice(0, 10);
       <h1 class="article-headline">{title}</h1>
 
       {/* Subheadline */}
-      {subheadline && <h1 class="article-sub-headline">{subheadline}</h1>}
+      {subheadline && <p class="article-sub-headline">{subheadline}</p>}
 
       {/* Byline */}
       <p class="article-byline">

@@ -17,9 +17,11 @@ export default defineConfig({
   integrations: [
     mdx(),
     sitemap({
-      // /sections/editorial-cartoons only redirects to the latest cartoon
+      // /sections/editorial-cartoons only redirects to the latest cartoon, and
+      // /editors/ holds internal tools that robots.txt disallows
       filter: (page) =>
-        !page.replace(/\/$/, "").endsWith("/sections/editorial-cartoons"),
+        !page.replace(/\/$/, "").endsWith("/sections/editorial-cartoons") &&
+        !page.includes("/editors/"),
     }),
   ]
 });

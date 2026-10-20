@@ -9,12 +9,13 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro",
-    "optimize": "node scripts/optimize-image.mjs"
+    "astro": "astro"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.7",
     "@astrojs/sitemap": "^3.7.4",
+    "@jsquash/jpeg": "^1.6.0",
+    "@jsquash/resize": "^2.1.1",
     "astro": "^7.2.4",
     "sharp": "^0.35.4"
   },

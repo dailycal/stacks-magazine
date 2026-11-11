@@ -42,8 +42,7 @@ const {
         ))}
       </div>
     ) : (
-      // The featured image sits above the fold, so it shouldn't lazy-load
-      src && <SmartImage src={src} alt={alt} loading={featured ? "eager" : undefined} />
+      src && <SmartImage src={src} alt={alt} />
     )
   }
 

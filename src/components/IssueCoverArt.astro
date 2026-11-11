@@ -22,7 +22,7 @@ if (!coverImage) {
 
 {
 	coverImage ? (
-		<SmartImage src={coverImage} alt={`${issue.issue} cover`} loading="eager" />
+		<SmartImage src={coverImage} alt={`${issue.issue} cover`} />
 	) : (
 		<div class="issue-cover-placeholder">
 			<span class="issue-cover-placeholder-issue">{issue.issue}</span>

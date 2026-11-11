@@ -12,11 +12,14 @@ import { withBase } from "../lib/path";
 interface Props {
   src: ImageMetadata | string;
   alt: string;
-  /** <Image> lazy-loads by default; pass "eager" for above-the-fold images. */
+  /**
+   * Defaults to "eager" so images are already there when they're scrolled to
+   * (<Image> on its own lazy-loads, which makes them pop in late).
+   */
   loading?: "eager" | "lazy";
 }
 
-const { src, alt, loading } = Astro.props;
+const { src, alt, loading = "eager" } = Astro.props;
 ---
 
 {

@@ -23,5 +23,23 @@ export default defineConfig({
         !page.replace(/\/$/, "").endsWith("/sections/editorial-cartoons") &&
         !page.includes("/editors/"),
     }),
-  ]
+  ],
+  vite: {
+    build: {
+      rolldownOptions: {
+        onwarn(warning, warn) {
+          // Astro's content-assets plugin marks every MDX module with a
+          // "use astro:head-inject" directive, which the bundler warns it may
+          // drop. Astro reads the marker before bundling, so this is harmless.
+          if (
+            warning.code === "MODULE_LEVEL_DIRECTIVE" &&
+            warning.message.includes("astro:head-inject")
+          ) {
+            return;
+          }
+          warn(warning);
+        },
+      },
+    },
+  },
 });

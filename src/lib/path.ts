@@ -4,14 +4,15 @@
  *
  * Astro rewrites bundled asset URLs automatically, but not `<a href>` targets
  * or `public/` references written as absolute paths, so every internal link
- * must go through this helper to keep working under the Pages subpath.
+ * must go through this helper to keep working if the site is served from a
+ * subpath.
  *
  * A full external URL (e.g. "https://media.dailycal.org/...") is returned
  * unchanged — prefixing it with the base would nest it under the site path
  * instead of leaving it pointing off-site.
  *
  * Page paths (no file extension) get a trailing slash, since pages are built
- * as <path>/index.html and GitHub Pages would otherwise answer every link to
+ * as <path>/index.html and the host would otherwise answer every link to
  * them with a redirect to the slashed URL first. File paths (e.g. ".jpg") are
  * left alone.
  */

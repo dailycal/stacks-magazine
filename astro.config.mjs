@@ -7,7 +7,7 @@ import { legacyRedirects } from './src/config/legacy-redirects';
 
 // https://astro.build/config
 export default defineConfig({
-  // Deployed to GitHub Pages at https://dailycal.github.io/stacks-magazine/
+  // Deployed to Cloudflare Workers (static assets; see wrangler.jsonc)
   site: 'https://stacksmagazine.org',
   base: '/',
   redirects: {

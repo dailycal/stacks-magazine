@@ -8,16 +8,16 @@ Source for [Stacks](https://stacksmagazine.org/), The Daily Californian's magazi
 
 ```bash
 npm install     # install dependencies
-npm run dev     # start the dev server at http://localhost:4321/stacks-magazine/
+npm run dev     # start the dev server at http://localhost:4321/
 npm run build   # build the static site to dist/
 npm run preview # serve the built dist/ locally, to check the real production output
 ```
 
 Always `npm run build` before pushing, because the build will fail on content formatting issues (e.g. a bad issue date).
 
-**Deploying** is automatic: every push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml), which builds the site and publishes `dist/` to GitHub Pages.
+**Deploying** is automatic: every push to `main` is built by Cloudflare Workers Builds, which runs `npm run build` and then `npx wrangler deploy` to publish `dist/` as static assets (configured in [`wrangler.jsonc`](wrangler.jsonc)). Separately, [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs `npm run build` on every push to `main` and every pull request, so a build error shows up as a failed check on GitHub.
 
-Previously, this site was served from `https://dailycal.github.io/stacks-magazine/`. Because of that, `astro.config.mjs`'s `site`/`base` were configured to point to this domain and this subpath. They are changed to the real address/path now that this is in production, but if you need to test in a fork, change it back to deploy it to github pages properly. Every internal link and asset reference should be built from `withBase()`.
+Previously, this site was served from `https://dailycal.github.io/stacks-magazine/`. Because of that, `astro.config.mjs`'s `site`/`base` were configured to point to this domain and this subpath. They are changed to the real address/path now that this is in production, but if you ever need to serve the site from a subpath again, set `base` accordingly. Every internal link and asset reference should be built from `withBase()`.
 
 ## Adding an article
 

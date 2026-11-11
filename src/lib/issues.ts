@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import type { ImageMetadata } from "astro";
 import { getCollection, type CollectionEntry } from "astro:content";
 import { z } from "astro/zod";
 import issueData from "../content/issues.json";
@@ -51,8 +51,9 @@ const issueSchema = z.strictObject({
   date: z.string().regex(new RegExp(`^(?:${MONTHS.join("|")})-\\d{4}$`), {
     message: 'expected "<full lowercase month>-<4-digit year>", e.g. "april-2026"',
   }),
-  // Site-root path to the cover image in public/.
-  cover: z.string().regex(/^\/(?!\/)/, { message: 'expected a site-root path, e.g. "/assets/covers/x.jpg"' }),
+  // Path to the cover image, relative to issues.json, e.g.
+  // "../assets/covers/issue-april-2026.jpg".
+  cover: z.string().regex(/^\.\.?\//, { message: 'expected a path relative to issues.json, e.g. "../assets/covers/x.jpg"' }),
   // Full URL or site-root path to the issue PDF, or "" if there isn't one.
   pdf: z.union([z.literal(""), z.url(), z.string().regex(/^\/(?!\/)/)]),
   // "" if uncredited.
@@ -299,13 +300,31 @@ export function getCurrentIssue(articleIssues: string[]): Issue {
   return meta;
 }
 
+// Every cover image, keyed by its project-root path (e.g.
+// "/src/assets/covers/issue-april-2026.jpg").
+const coverImages = import.meta.glob<ImageMetadata>(
+  "/src/assets/covers/*.{avif,png,jpg,jpeg,webp}",
+  { eager: true, import: "default" },
+);
+
 /**
- * Resolves an issue's cover image (its `cover` field, a site-root path to a
- * file in public/). Shared by IssueCoverArt.astro (rendering the cover) and
+ * The project-root path an issue's `cover` points to, e.g.
+ * "../assets/covers/x.jpg" (relative to src/content/issues.json) ->
+ * "/src/assets/covers/x.jpg".
+ * @param issue The issue whose cover path to resolve.
+ * @returns The cover's project-root path.
+ */
+export function issueCoverPath(issue: Issue): string {
+  return new URL(issue.cover, "file:///src/content/issues.json").pathname;
+}
+
+/**
+ * Resolves an issue's cover image (its `cover` field, a path relative to
+ * issues.json). Shared by IssueCoverArt.astro (rendering the cover) and
  * SEO.astro (the default social share image).
  * @param issue The issue whose cover to resolve.
- * @returns The cover's site-root path, or undefined if public/ has no such file.
+ * @returns The cover image, or undefined if there's no such file.
  */
-export function resolveIssueCoverImage(issue: Issue): string | undefined {
-  return existsSync(`public${issue.cover}`) ? issue.cover : undefined;
+export function resolveIssueCoverImage(issue: Issue): ImageMetadata | undefined {
+  return coverImages[issueCoverPath(issue)];
 }

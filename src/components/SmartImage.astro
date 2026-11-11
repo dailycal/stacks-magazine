@@ -12,9 +12,11 @@ import { withBase } from "../lib/path";
 interface Props {
   src: ImageMetadata | string;
   alt: string;
+  /** <Image> lazy-loads by default; pass "eager" for above-the-fold images. */
+  loading?: "eager" | "lazy";
 }
 
-const { src, alt } = Astro.props;
+const { src, alt, loading } = Astro.props;
 ---
 
 {
@@ -22,8 +24,8 @@ const { src, alt } = Astro.props;
     // withBase() no-ops on a full external URL and only prefixes a
     // public/-style root path (see its own doc comment), so this is correct
     // for both kinds of string src.
-    <img src={withBase(src)} alt={alt} />
+    <img src={withBase(src)} alt={alt} loading={loading} />
   ) : (
-    <Image src={src} alt={alt} />
+    <Image src={src} alt={alt} loading={loading} />
   )
 }

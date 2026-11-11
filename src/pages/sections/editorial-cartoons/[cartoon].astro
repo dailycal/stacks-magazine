@@ -2,7 +2,7 @@
 import PageLayout from "../../../layouts/PageLayout.astro";
 import "../../../styles/cartoon-page.css";
 import { cartoonHref, getAllCartoons } from "../../../lib/cartoons";
-import { withBase } from "../../../lib/path";
+import { Image } from "astro:assets";
 
 /**
  * Gets the static paths for every cartoon, each with its neighbors in
@@ -50,7 +50,7 @@ const alt = `“${title}”, an editorial cartoon by ${author}`;
 
     {/* Cartoon, title and author */}
     <figure class="cartoon-figure">
-      <img src={withBase(image)} alt={alt} loading="eager" />
+      <Image src={image} alt={alt} loading="eager" />
       <figcaption>
         <h1 class="cartoon-title">“{title}”</h1>
         <span class="cartoon-author">Cartoon by {author}</span>

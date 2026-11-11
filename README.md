@@ -24,7 +24,7 @@ Previously, this site was served from `https://dailycal.github.io/stacks-magazin
 Every article is one `.mdx` file (frontmatter + body) in `src/content/`, in a folder that decides which issue it belongs to:
 
 - **Part of an issue:** `src/content/issue-<month>-<year>/<slug>.mdx`, e.g. `src/content/issue-april-2026/my-article.mdx`. The folder name must be `issue-` followed by a full lowercase month name and a 4-digit year (e.g. `issue-april-2026`). This also has to be a folder that already has an entry in `src/content/issues.json` (see [Adding an issue](#adding-an-issue) below). The article is served at `/issues/<month>-<year>/<slug>`. If the above conditions are not met, the build will fail.
-- **Not part of an issue:** `src/content/no-issue/<yyyy-mm-dd>-<slug>.mdx`, e.g. `src/content/no-issue/2026-10-04-catholic.mdx`. The file name must start with the article's `publishDate` in `yyyy-mm-dd` format, or the build will fail. Its images go in `public/assets/images/no-issue/<yyyy-mm-dd>-<slug>/`. Served at `/articles/<yyyy-mm-dd>-<slug>` instead.
+- **Not part of an issue:** `src/content/no-issue/<yyyy-mm-dd>-<slug>.mdx`, e.g. `src/content/no-issue/2026-10-04-catholic.mdx`. The file name must start with the article's `publishDate` in `yyyy-mm-dd` format, or the build will fail. Its images go in `src/assets/images/no-issue/<yyyy-mm-dd>-<slug>/`. Served at `/articles/<yyyy-mm-dd>-<slug>` instead.
 
 The article's `<slug>` becomes its URL segment, so keep it URL-safe (lowercase, hyphens).
 
@@ -40,7 +40,7 @@ The article's `<slug>` becomes its URL segment, so keep it URL-safe (lowercase, 
 | `section` | Must exactly match a `name` in `src/config/sections.ts`. A section with `customPage: true` (currently just Editorial Cartoons) can't be used here, the build throws. | Yes |
 | `issue` | The issue slug it belongs to, should match the folder it lives in. | No |
 | `staffAttribution` | `true` adds "\| Staff" after the byline. Default `false`. | No |
-| `featuredImage` | The header/card image: either a site-root path to a file in `public/` (e.g. `"/assets/images/issue-april-2026/my-article/cover.jpg"`) or a full external URL. | No |
+| `featuredImage` | The header/card image: either a path to an image in `src/assets/images/`, relative to the `.mdx` file (e.g. `"../../assets/images/issue-april-2026/my-article/cover.jpg"`), or a full external URL. | No |
 | `featuredImageAlt` | Alt text for `featuredImage`. | No |
 | `featuredImageCaption` | Caption/credit shown under `featuredImage` on the article page. | No |
 | `skipFeaturedImage` | `true` hides `featuredImage` on the article page itself (it still shows on cards and in social previews). Use this when the article body already opens with that same image, so it doesn't show twice. Default `false`. | No |
@@ -56,7 +56,7 @@ excerpt: "One or two sentences for cards and search results."
 authors: ["Jane Doe"]
 publishDate: 2026-05-01
 section: "Essays"
-featuredImage: "/assets/images/issue-april-2026/my-article/cover.jpg"
+featuredImage: "../../assets/images/issue-april-2026/my-article/cover.jpg"
 featuredImageAlt: "Description of the photo"
 featuredImageCaption: "Photo by Jane Doe"
 issue: "issue-april-2026" # optional
@@ -66,7 +66,7 @@ keywords: [] # optional
 ---
 
 import ArticleImage from "../../components/ArticleImage.astro";
-export const inlinePhoto = "/assets/images/issue-april-2026/my-article/inline.jpg";
+import inlinePhoto from "../../assets/images/issue-april-2026/my-article/inline.jpg";
 
 The body is regular Markdown/MDX. Paragraphs, **bold**, *italics*, [links](https://dailycal.org), and `<ArticleImage>` for a photo inline in the text all work:
 
@@ -81,11 +81,11 @@ A few important components:
 
 ### Adding images
 
-Put an article's images in `public/assets/images/<same folder as the article>/<article-slug>/`, e.g. `public/assets/images/issue-april-2026/my-article/`, and reference them by their site-root path (without `public`):
-- `featuredImage` as a plain string in frontmatter: `featuredImage: "/assets/images/issue-april-2026/my-article/cover.jpg"`, and
-- inline images as a constant at the top of the `.mdx` file (`export const inlinePhoto = "/assets/images/issue-april-2026/my-article/inline.jpg";`), passed to `<ArticleImage src={inlinePhoto} ... />`.
+Put an article's images in `src/assets/images/<same folder as the article>/<article-slug>/`, e.g. `src/assets/images/issue-april-2026/my-article/`, and reference them by their path relative to the `.mdx` file (which, from `src/content/<folder>/`, always starts with `../../assets/images/`):
+- `featuredImage` as a string in frontmatter: `featuredImage: "../../assets/images/issue-april-2026/my-article/cover.jpg"`, and
+- inline images as an import at the top of the `.mdx` file (`import inlinePhoto from "../../assets/images/issue-april-2026/my-article/inline.jpg";`), passed to `<ArticleImage src={inlinePhoto} ... />`.
 
-An external URL works too, as a plain string.
+Astro optimizes these at build time: it converts them to WebP, sets their width and height, and lazy-loads them (except the featured image). A wrong path fails the build. An external URL works too, as a plain string, but isn't optimized.
 
 Run these through the [image optimization pipeline](#optimizing-images) before committing them. Source photos straight off a camera or phone are typically 10-25MB, which is a lot to ship over the wire for something that renders at a few hundred pixels wide.
 
@@ -96,26 +96,26 @@ Open [stacksmagazine.org/editors/image-optimization](https://stacksmagazine.org/
 - any transparent areas are flattened onto white, since JPEG has no transparency, and
 - it's compressed with mozjpeg at quality 85, keeping full-resolution color (4:4:4) so colored edges in illustrations and text stay crisp.
 
-The page shows the old and new resolution and file size. Switch between Original and Optimized to compare the two, then download the optimized `.jpg` and put it in `public/assets/...` instead of the original.
+The page shows the old and new resolution and file size. Switch between Original and Optimized to compare the two, then download the optimized `.jpg` and put it in `src/assets/...` instead of the original.
 
 Use Chrome or Safari: Firefox ignores some embedded color profiles, which shifts colors slightly. HEIC (iPhone photos) and TIFF files only open in Safari, and raw camera photo formats don't open anywhere (export these to JPEG or PNG first). Do not optimize svg images, they are already optimized.
 
 ## Adding an issue
 
-1. Add the issue's cover image to `public/assets/covers/` (and [optimize](#optimizing-images) it).
+1. Add the issue's cover image to `src/assets/covers/` (and [optimize](#optimizing-images) it).
 2. Add an entry to `src/content/issues.json` (it's validated at build time, so a typo or missing field fails the build):
    ```json
    {
      "issue": "Issue III",
      "date": "may-2026",
-     "cover": "/assets/covers/issue-may-2026.jpg",
+     "cover": "../assets/covers/issue-may-2026.jpg",
      "pdf": "https://media.dailycal.org/.../Issue_3.pdf",
      "coverAuthor": "Cover Artist Name"
    }
    ```
    - `issue`: display label, e.g. "Issue III"
    - `date`: must match a `src/content/issue-may-2026` folder
-   - `cover`: site-root path to a file in `public/`
+   - `cover`: path to the image in `src/assets/covers/`, relative to `issues.json` (e.g. `"../assets/covers/issue-may-2026.jpg"`)
    - `pdf`: print PDF URL, or `""` if digital issue
    - `coverAuthor`: or `""` if unknown
 3. Add the `src/content/issue-may-2026/` folder and its articles (see [Adding an article](#adding-an-article)).
@@ -128,7 +128,7 @@ The **newest** entry in `issues.json` (by `date`) must correspond to the newest 
 
 Editorial cartoons aren't articles — they're their own content type, one JSON file plus one image per cartoon:
 
-1. Add the image to `public/assets/images/cartoons/<slug>.<avif|png|jpg|jpeg|webp>` (and [optimize](#optimizing-images) it).
+1. Add the image to `src/assets/images/cartoons/<slug>.<avif|png|jpg|jpeg|webp>` (and [optimize](#optimizing-images) it).
 2. Add `src/content/cartoons/<slug>.json`:
    ```json
    {
